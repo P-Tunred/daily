@@ -1,0 +1,1883 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Schibsted Grotesk — self-hosted (Setzling theme) */
+@font-face {
+  font-family: 'Schibsted Grotesk'; font-style: normal; font-weight: 300 700; font-display: swap;
+  src: url('/setzling/fonts/f02a268f-81ab-434e-b640-04e1d6f416d7.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Schibsted Grotesk'; font-style: normal; font-weight: 300 700; font-display: swap;
+  src: url('/setzling/fonts/30a2be26-cfde-4d77-afca-22385293ac9c.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Schibsted Grotesk'; font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/setzling/fonts/59dcf657-af95-4aa7-a157-21c71c821f89.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Schibsted Grotesk'; font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/setzling/fonts/9c7db43b-e3b2-47c6-aabe-0f6458e712b2.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ============================================================
+   Aurora Design Tokens · Morning Dashboard · v2
+   Single source of truth — all other styles reference variables.
+   ============================================================ */
+
+:root {
+  /* --- Surfaces ------------------------------------------- */
+  --ink-0: #05060A;                    /* page beneath aurora   */
+  --ink-1: #0A0C12;                    /* base                  */
+  --ink-2: #11141B;                    /* solid cards           */
+  --ink-3: #171B24;                    /* nested rows, chips    */
+  --ink-4: #1F2430;                    /* hover / active        */
+
+  /* Glass material — Tokyo Night / Catppuccin Mocha (Paul, Aug 2026).
+     Die Flaeche traegt nur noch eine Tonung, keine Deckung: 0.30 statt 0.55,
+     dafuer deutlich mehr Unschaerfe. Das Hintergrundbild bleibt dadurch
+     sichtbar, der Text darueber trotzdem lesbar — die Lesbarkeit kommt jetzt
+     aus dem Blur (48px trennt Vorder- von Hintergrund), nicht aus Deckkraft.
+     Der Farbwert liegt zwischen Tokyo Night (#1a1b26) und Mocha (#1e1e2e):
+     blau-lila statt neutralem Grau, damit die Flaeche kuehl wirkt und nicht
+     schwarz. Nur die dunklen Themes lesen diese Werte — Kupferstich und
+     Arkadien setzen weiter ihr eigenes Cremeglas. */
+  --glass-bg:       rgba(28, 28, 44, 0.30);
+  --glass-blur:     48px;
+  --glass-saturate: 1.5;
+
+  /* Schleier hinter dem Alert-Pop-up.
+     WARUM ALS TOKEN UND NICHT IN DER KOMPONENTE
+     Ein fest verdrahtetes Dunkelblau passt zu den dunklen Themes und zu keinem
+     anderen: auf dem cremefarbenen Kupferstich-Papier steht es als fremder
+     Klotz, und im durchsichtigen Glas-Thema deckt es genau den Schreibtisch zu,
+     wegen dem das Thema existiert. Jedes Thema setzt deshalb seinen eigenen
+     Ton — die Komponente liest nur noch. */
+  --overlay-bg:   rgba(6, 6, 14, 0.58);
+  --overlay-blur: 6px;
+
+  /* Abdunkelung hinter einem Dialog. Als Token, weil sie zum Thema passen muss:
+     ein dunkler Schleier ueber dem hellen Kupferstich sieht aus wie ein Fehler,
+     und im durchsichtigen Glas-Thema wuerde er den Schreibtisch zumauern, den
+     man dort ja gerade sehen will. Jedes Thema setzt seinen eigenen Wert. */
+  --overlay-bg:   rgba(6, 6, 14, 0.58);
+  --overlay-blur: 6px;
+
+  /* --- Text ---------------------------------------------- */
+  --text-1: #F3F6EE;
+  --text-2: rgba(243, 246, 238, 0.66);
+  --text-3: rgba(243, 246, 238, 0.42);
+  --text-4: rgba(243, 246, 238, 0.28);
+
+  /* --- Accent + Semantic --------------------------------- */
+  --accent:      #AECB82;                    /* new-growth green (Setzling) */
+  --accent-deep: #86A95E;
+  --accent-soft: rgba(174, 203, 130, 0.16);
+
+  --warn:      #E0C07A;                       /* wichtig — ochre */
+  --warn-soft: rgba(224, 192, 122, 0.14);
+
+  --crit:      #E0986E;                       /* kritisch — clay */
+  --crit-soft: rgba(224, 152, 110, 0.14);
+
+  --ok:        #AECB82;                       /* erledigt — moss */
+  --ok-soft:   rgba(174, 203, 130, 0.14);
+
+  /* Text/marks ON an accent-filled surface (chips, "Hingehen" active, …).
+     Dark for the dark photo themes; Kupferstich flips it to paper-cream. */
+  --on-accent: #10180f;
+
+  /* --- Calendar tags ------------------------------------- */
+  /* One muted hue per source calendar — desaturated so they harmonise on the
+     dark Setzling photo while staying distinguishable. Mapped in calendarTags.ts. */
+  --cal-uni:      #AECB82;                    /* Uni — new-growth green (= accent) */
+  --cal-klausur:  #E0986E;                    /* Klausur — clay (= crit, high stakes) */
+  --cal-privat:   #E0C07A;                    /* Privat — warm honey (= warn) */
+  --cal-familie:  #8FB7A0;                    /* Familie — soft eucalyptus */
+  --cal-freunde:  #C9AE8E;                    /* Freunde — warm sand */
+  --cal-arbeit:   #A9A98C;                    /* Arbeit — dry olive / stone */
+  --cal-default:  rgba(243, 246, 238, 0.42);  /* everything else — neutral */
+
+  /* Deepest stop of the Lernzeit progress ramp (0% studied) — darker/more
+     muted than --accent-deep, reads as calm rather than urgent. */
+  --accent-dim: #3E5A41;
+
+  /* --- Subject colors (Lernzeit "Fächer") ------------------ */
+  /* Referenced via var() everywhere a subject color is used (SubjectDot,
+     TrackerDashboard/Timer/Settings) so switching theme re-colors every
+     already-created subject too — see tracker/colors.ts + the one-time
+     migration in tracker/store.tsx that upgrades old literal-hex subjects. */
+  --subject-1:  #7AA2FF;   /* periwinkle */
+  --subject-2:  #73C9A8;   /* sage mint */
+  --subject-3:  #E8B948;   /* warm gold */
+  --subject-4:  #F07A6A;   /* coral */
+  --subject-5:  #9B8FE0;   /* soft indigo */
+  --subject-6:  #C47DB5;   /* dusty mauve */
+  --subject-7:  #5BB8D4;   /* steel teal */
+  --subject-8:  #D4A052;   /* amber */
+  --subject-9:  #89B49A;   /* muted sage */
+  --subject-10: #B89A75;   /* warm sand */
+  --subject-11: #5B8DD4;   /* deep periwinkle */
+  --subject-12: #E07A96;   /* dusty rose */
+
+  /* Setzling: text legibility over the photo + organic easing */
+  --shadow-text: 0 1px 14px rgba(0, 0, 0, 0.45);
+  --base-weight: 300;
+
+  /* --- Lines / borders ----------------------------------- */
+  --line-1: rgba(243, 246, 238, 0.12);   /* default hairline (over photo) */
+  --line-2: rgba(243, 246, 238, 0.22);   /* hover            */
+  --line-3: rgba(243, 246, 238, 0.34);   /* active / focus   */
+  --fill-0: rgba(243, 246, 238, 0.04);   /* faintest surface tint */
+  --fill-1: rgba(243, 246, 238, 0.06);   /* faint surface tint    */
+
+  /* --- Spacing (base 4) ---------------------------------- */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 64px;
+  --space-3xl: 160px;
+
+  /* --- Radius -------------------------------------------- */
+  --r-sm:  8px;
+  --r-md: 14px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+
+  /* --- Shadows ------------------------------------------- */
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.6);
+
+  /* --- Type scale ---------------------------------------- */
+  --fs-display-hero: 148px;
+  --fs-display:       84px;
+  --fs-h1:            72px;
+  --fs-h2:            24px;
+  --fs-h3:            17px;
+  --fs-body:          16px;
+  --fs-meta:          13px;
+  --fs-label:         11px;
+  --fs-stat:          60px;
+
+  /* Tracking (letter-spacing) */
+  --tr-display-hero: -0.04em;
+  --tr-display:      -0.03em;
+  --tr-h1:           -0.025em;
+  --tr-h2:           -0.015em;
+  --tr-h3:           -0.005em;
+  --tr-label:         0.14em;     /* UPPERCASE only */
+
+  /* --- Motion -------------------------------------------- */
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-micro: 180ms;
+  --dur-panel: 320ms;
+  --dur-page:  600ms;
+
+  /* --- Layout -------------------------------------------- */
+  /* Fluid: identical to the old 1280px cap on laptop-sized screens, but on
+     wide monitors the content follows the viewport (94%) out to 2240px
+     instead of congesting in a fixed middle column. Still centered — the
+     mx-auto margins stay equal on both sides at every width. */
+  --container-max: clamp(1280px, 94vw, 2240px);
+  --container-pad: 56px;
+}
+
+/* ============================================================
+   Tailwind theme — maps Aurora tokens to utility classes.
+   Note: @theme does not support var(), values must be literals.
+   ============================================================ */
+
+@theme {
+  /* ── Aurora surfaces ───────────────────────────────────── */
+  --color-bg:             #05060A;                    /* --ink-0    */
+  --color-bg-elev:        #0A0C12;                    /* --ink-1    */
+  --color-surface:        rgba(28, 28, 44, 0.30);     /* --glass-bg */
+  --color-surface-strong: rgba(28, 28, 44, 0.62);
+  --color-hairline:       rgba(255, 255, 255, 0.06);  /* --line-1   */
+
+  /* ── Aurora text ───────────────────────────────────────── */
+  --color-fg:           #F5F5F7;    /* --text-1 */
+  --color-fg-secondary: #B6BAC4;    /* --text-2 */
+  --color-fg-tertiary:  #86889A;    /* --text-3 */
+
+  /* ── Accent — periwinkle, single accent ────────────────── */
+  --color-blue:   #AECB82;          /* remapped to --accent */
+  --color-accent: #AECB82;
+
+  /* ── Semantic ──────────────────────────────────────────── */
+  --color-positive: #73C9A8;        /* --ok   */
+  --color-negative: #F07A6A;        /* --crit */
+  --color-warning:  #E8B948;        /* --warn */
+
+  /* ── Extended palette — kept for existing badges/chips ─── */
+  --color-cyan:   #64d2ff;
+  --color-mint:   #73C9A8;
+  --color-teal:   #40c8e0;
+  --color-indigo: #AECB82;
+  --color-purple: #bf5af2;
+  --color-pink:   #ff375f;
+  --color-orange: #E8B948;
+  --color-yellow: #ffd60a;
+  --color-red:    #F07A6A;
+  --color-green:  #73C9A8;
+  --color-brown:  #ac8e68;
+
+  /* ── Radius ────────────────────────────────────────────── */
+  --radius-card:    24px;            /* --r-lg */
+  --radius-card-sm: 14px;            /* --r-md */
+  --radius-button:  14px;            /* --r-md */
+  --radius-pill:    9999px;
+
+  /* ── Shadows ───────────────────────────────────────────── */
+  --shadow-soft:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.6);
+  --shadow-glow-sm: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  --shadow-pop:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 30px 60px -20px rgba(0, 0, 0, 0.65);
+
+  /* ── Typography ────────────────────────────────────────── */
+  --font-display:
+    "Schibsted Grotesk", -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+  --font-sans:
+    "Schibsted Grotesk", -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+  --font-serif:
+    ui-serif, "New York", "Apple Garamond", Georgia, serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, monospace;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  background: var(--ink-0);
+  /* html is the scroll container. Three things, all on this one element so the
+     reservations don't stack (putting them on body too shifted #root 15px left
+     → the visible off-center growth):
+       · overflow-x: hidden       — never a horizontal scrollbar
+       · overscroll-behavior: none — kill macOS elastic bounce; in the frameless
+         Electron window that rubber-band reads as "the app being dragged around"
+       · scrollbar-gutter both-edges — reserve the vertical scrollbar's width on
+         BOTH sides so the centered content grows symmetrically instead of the
+         scrollbar eating ~15px on the right only. */
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  scrollbar-gutter: stable both-edges;
+}
+
+body {
+  margin: 0;
+  position: relative;
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Thema "Glas": den gesamten deckenden Untergrund abschalten, damit im
+   transparenten Electron-Fenster der Schreibtisch durchkommt. Gesetzt von
+   App.tsx auf <html>, weil die beiden Aurora-Ebenen an body haengen und von
+   der App-Huelle aus nicht erreichbar waeren. */
+html[data-transparent],
+html[data-transparent] body {
+  background: transparent !important;
+}
+html[data-transparent] body::before,
+html[data-transparent] body::after {
+  display: none;
+}
+
+/* ── Aurora static background — Layer 1: radial mesh ──────────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 50% at 80%   0%, #1f3566 0%, transparent 55%),
+    radial-gradient(60% 50% at  0%  30%, #2a1f48 0%, transparent 55%),
+    radial-gradient(80% 60% at 50% 110%, #142547 0%, transparent 60%),
+    linear-gradient(180deg, #0A0C12 0%, #05060A 100%);
+}
+
+/* ── Aurora static background — Layer 2: dust noise ──────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.022) 1px,
+    transparent 0
+  );
+  background-size: 3px 3px;
+  opacity: 0.6;
+}
+
+/* All app content sits above aurora layers.
+   AmbientProvider's fixed div (z-index 0) layers on top of body::before
+   and acts as the dynamic time-of-day overlay — no conflict. */
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background-color: rgba(122, 162, 255, 0.28);   /* --accent at 28% */
+  color: #fff;
+}
+
+/* h1 → New York / ui-serif (emotional section headlines)
+   h2 → ui sans (card titles)
+   h3 → ui sans (row titles) */
+h1 {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h1);
+  font-weight: 400;
+  letter-spacing: var(--tr-h1);
+  line-height: 1.02;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  letter-spacing: var(--tr-h2);
+  line-height: 1.2;
+  font-feature-settings: "ss01";
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--tr-h3);
+  line-height: 1.3;
+  font-feature-settings: "ss01";
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+/* Assistant / chat message fade-slide */
+@keyframes msg-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.msg-fade {
+  animation: msg-fade-in var(--dur-panel) var(--ease) forwards;
+}
+
+/* Map location dot pulse ring */
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(2.2); opacity: 0;   }
+  100% { transform: scale(2.2); opacity: 0;   }
+}
+
+/* Session saved toast — slide up, hold, fade out */
+@keyframes saved-toast {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(16px) scale(0.94); }
+  4%   { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1);    }
+  88%  { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1);    }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-8px)  scale(0.97); }
+}
+.saved-toast-anim {
+  animation: saved-toast 30s var(--ease) forwards;
+}
+
+/* ============================================================
+   Glass surfaces
+   ============================================================ */
+
+/* Primary glass card — Aurora glass over aurora background */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--line-1);
+  box-shadow: var(--shadow-card);
+}
+
+/* Kartenkopf (components/Card.tsx). Bis 2026-11-01 standen diese Werte inline;
+   als Klassen kann die Still-Ebene (still-app.css) sie umstellen, ohne dass
+   sich am Original etwas ändert. */
+.card-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-3);
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  color: var(--text-4);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Canonical alias — use this for new components */
+.aurora-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.glass-strong {
+  /* Bleibt die dichtere Stufe fuer Menues und Overlays, aber ebenfalls
+     durchscheinend statt deckend — sonst steht sie als schwarzer Block im
+     sonst schwebenden Glas. Mehr Unschaerfe gleicht die geringere Deckung aus. */
+  background: rgba(28, 28, 44, 0.62);
+  backdrop-filter: blur(56px) saturate(1.6);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-card);
+}
+
+/* Lernzeit page — cards keep the Aurora glass treatment (matches Heute tab).
+   The progress-tinted background lives behind everything via .lernzeit-progress-bg. */
+
+/* ============================================================
+   Lernzeit progress-tinted background
+   ============================================================ */
+
+/* The background sits fixed behind all content. Its color is driven by
+   --progress-color (red → yellow → green) and --progress-intensity (0–1),
+   both set inline by the LernzeitProgressBackground component. */
+.lernzeit-progress-bg {
+  position: fixed;
+  inset: 0;
+  /* WARUM NICHT MEHR z-index: -10 UND KEIN EIGENER GRUND
+     Bei -10 lag diese Ebene HINTER der Buehne — der Fortschritt war damit gar
+     nicht zu sehen, egal wie viel gelernt wurde. Und `background: var(--ink-0)`
+     war deckend: haette man sie nach vorn geholt, haette sie Foto und Aurora
+     zugemauert, statt sie einzufaerben.
+     Jetzt liegt sie auf 1, also ueber Buehne und Schleier, aber unter dem
+     Inhalt (der auf 2 liegt) — und ohne eigenen Grund. Sichtbar sind nur die
+     beiden farbigen Schlieren, die zu transparent auslaufen. Der Fortschritt
+     UEBERLAGERT die Aurora damit, statt sie zu ersetzen. */
+  z-index: 1;
+  pointer-events: none;
+  background: transparent;
+  overflow: hidden;
+  /* Two drifting aurora layers via pseudo-elements below.
+     Color + intensity transition smoothly when ratio changes. */
+}
+
+.lernzeit-progress-bg::before,
+.lernzeit-progress-bg::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: background 1500ms var(--ease);
+}
+
+/* Layer 1 — top + right blobs, slow drift */
+.lernzeit-progress-bg::before {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 30% 15%,
+      color-mix(in srgb, var(--progress-color, var(--accent)) calc(var(--progress-intensity, 0.25) * 110%), transparent) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 65% 50% at 85% 55%,
+      color-mix(in srgb, var(--progress-color, var(--accent)) calc(var(--progress-intensity, 0.25) * 75%), transparent) 0%,
+      transparent 60%
+    );
+  animation: aurora-drift-a 22s ease-in-out infinite;
+}
+
+/* Layer 2 — bottom + left blobs, slower drift, offset phase */
+.lernzeit-progress-bg::after {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 65% 95%,
+      color-mix(in srgb, var(--progress-color, var(--accent)) calc(var(--progress-intensity, 0.25) * 95%), transparent) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 60% 55% at 12% 70%,
+      color-mix(in srgb, var(--progress-color, var(--accent)) calc(var(--progress-intensity, 0.25) * 70%), transparent) 0%,
+      transparent 60%
+    );
+  animation: aurora-drift-b 28s ease-in-out infinite;
+}
+
+@keyframes aurora-drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0)       scale(1.00); }
+  25%      { transform: translate3d(3%, -2%, 0)    scale(1.06); }
+  50%      { transform: translate3d(-2%, 3%, 0)    scale(1.10); }
+  75%      { transform: translate3d(-3%, -1%, 0)   scale(1.04); }
+}
+
+@keyframes aurora-drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0)       scale(1.00); }
+  33%      { transform: translate3d(-3%, 2%, 0)    scale(1.08); }
+  66%      { transform: translate3d(2%, -3%, 0)    scale(1.05); }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Over-goal: golden glow layer fades in past 100 %.
+   Sits above the base aurora, animates a bit faster to feel lively.
+   ────────────────────────────────────────────────────────────── */
+.lernzeit-progress-bg-gold {
+  position: fixed;
+  inset: -25%;
+  /* Wie die Ebene darunter aus dem Hintergrund nach vorn geholt (war -9).
+     Sie erscheint nur ueber dem Tagesziel und muss dann auch zu sehen sein —
+     genau das ist der Moment, den sie feiern soll.
+     Ebenfalls 1, NICHT 2: auf 2 liegt der Inhalt, dort waere das Gold ueber
+     dem Text. Dass es trotzdem auf der Fortschrittsebene liegt, macht die
+     Reihenfolge im DOM — die Gold-Ebene wird danach gerendert. */
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  will-change: transform, opacity;
+  background:
+    radial-gradient(
+      ellipse 65% 50% at 25% 30%,
+      color-mix(in srgb, #F5C770 calc(var(--gold-intensity, 0.3) * 100%), transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 80% 75%,
+      color-mix(in srgb, #F5C770 calc(var(--gold-intensity, 0.3) * 85%), transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 55% 50%,
+      color-mix(in srgb, #FFE0A8 calc(var(--gold-intensity, 0.3) * 55%), transparent) 0%,
+      transparent 65%
+    );
+  animation: aurora-gold 16s ease-in-out infinite;
+  opacity: 0;
+  animation-fill-mode: both;
+}
+
+/* The component only mounts this div when overGoal > 0, so fade it in */
+.lernzeit-progress-bg-gold {
+  opacity: 1;
+  transition: opacity 1800ms var(--ease);
+}
+
+@keyframes aurora-gold {
+  0%, 100% { transform: translate3d(0, 0, 0)      scale(1.00); }
+  25%      { transform: translate3d(-2%, 3%, 0)   scale(1.08); }
+  50%      { transform: translate3d(4%, -2%, 0)   scale(1.12); }
+  75%      { transform: translate3d(2%, 2%, 0)    scale(1.05); }
+}
+
+/* Respect reduced motion — keep the glow, drop the drift */
+@media (prefers-reduced-motion: reduce) {
+  .lernzeit-progress-bg::before,
+  .lernzeit-progress-bg::after,
+  .lernzeit-progress-bg-gold {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Heute / Mission Control — Jarvis-style flowing brief
+   ============================================================ */
+
+.heute-card {
+  /* Slightly softer surface than default glass — lets the bloom shine */
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 4%, transparent) 0%,
+      transparent 35%),
+    var(--glass-bg);
+}
+
+/* Soft accent bloom behind the whole card — adds "glass layering" depth.
+   Three blobs at low opacity so it never fights the foreground. */
+.heute-aurora-bloom {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 50% 35% at 18% 12%,
+      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 45% 30% at 92% 28%,
+      color-mix(in srgb, var(--accent) 9%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 55% 30% at 50% 100%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 0%,
+      transparent 75%);
+  opacity: 0.9;
+}
+
+/* HUD ribbon — thin monospaced live-status strip */
+.hud-strip {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ink-3) 60%, transparent);
+  border: 1px solid var(--line-1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.hud-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.hud-cell + .hud-cell::before {
+  content: "│";
+  color: var(--text-4);
+  opacity: 0.45;
+  margin-right: 4px;
+}
+
+.hud-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.hud-label {
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 9px;
+}
+
+.hud-value {
+  color: var(--text-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-extra {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.hud-truncate {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+  font-style: italic;
+}
+
+/* Section containers in the Heute stream */
+.heute-section {
+  position: relative;
+}
+
+/* Hero section — Jarvis gets a faint accent edge to make it feel central */
+.heute-section--hero {
+  padding: 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ink-3) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--line-1));
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--accent) 4%, transparent);
+}
+
+/* Hairline divider between stream sections */
+.heute-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--line-2) 12%,
+    var(--line-2) 88%,
+    transparent 100%);
+}
+
+/* Weather card — deep solid surface to anchor the map */
+.glass-dark {
+  background: rgba(5, 6, 10, 0.97);
+  backdrop-filter: blur(40px) saturate(1.2);
+  border: 1px solid var(--line-1);
+  box-shadow: var(--shadow-card);
+}
+
+/* ============================================================
+   Pill segmented control
+   ============================================================ */
+
+/* Quiet nav track — no visible chrome; only the active pill carries weight. */
+.pill-track {
+  background: transparent;
+  border-radius: 9999px;
+  padding: 3px;
+  display: inline-flex;
+  gap: 2px;
+}
+
+/* ============================================================
+   Lernzeit polish — designed interaction states (Aurora).
+   Visual only: hover, focus-visible, motion. No layout changes.
+   ============================================================ */
+.lernzeit-page .glass {
+  transition: border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lernzeit-page .glass:hover {
+  border-color: var(--line-2);
+}
+.lernzeit-page button {
+  transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lernzeit-page button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.lernzeit-page input[type="text"]:focus,
+.lernzeit-page input[type="time"]:focus,
+.lernzeit-page input[type="date"]:focus,
+.lernzeit-page input[type="number"]:focus {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* ============================================================
+   Lernstrom — editorial flat sections replace glass tiles on
+   Dashboard + Kalender. Content sits directly on the living
+   progress background; hairlines + mono kickers give structure.
+   ============================================================ */
+.lernzeit-page {
+  counter-reset: lzsec;
+}
+.lernzeit-page .flat-section {
+  border-top: 1px solid var(--line-1);
+  padding-top: clamp(16px, 1.8vw, 24px);
+  counter-increment: lzsec;
+}
+.lernzeit-page .flat-section.flat-hero {
+  border-top: 0;
+  padding-top: 0;
+}
+/* Kickers carry the day's tone — same color the sky breathes (red→amber→green),
+   softened toward neutral so a red morning never reads as an error state. */
+.lernzeit-page .flat-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lz-accent, var(--accent)) 55%, var(--text-2));
+  font-weight: 500;
+}
+/* Editorial chapter numbers — auto-counted, zero markup */
+.lernzeit-page .flat-kicker::before {
+  content: counter(lzsec, decimal-leading-zero) " · ";
+  color: var(--text-4);
+}
+.lernzeit-page .flat-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+/* Serif voice line in the hero — same register as the Daily briefing */
+.lernzeit-page .lern-statement {
+  font-family: ui-serif, "New York", "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--text-1);
+  max-width: 40ch;
+}
+.lernzeit-page .lern-statement em {
+  color: var(--text-3);
+  font-style: italic;
+}
+
+/* ============================================================
+   Inputs
+   ============================================================ */
+
+.field {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    box-shadow var(--dur-micro) var(--ease),
+    border-color var(--dur-micro) var(--ease);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field::placeholder {
+  color: var(--text-4);
+}
+
+.field:focus,
+.field:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* ============================================================
+   Form controls
+   ============================================================ */
+
+/* Circular check */
+input[type="checkbox"].ios-check {
+  appearance: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    transform 100ms var(--ease);
+  border: 1px solid var(--line-2);
+}
+
+input[type="checkbox"].ios-check:checked {
+  background-color: var(--ok);
+  border-color: var(--ok);
+}
+
+input[type="checkbox"].ios-check:checked::after {
+  content: "";
+  width: 0.875rem;
+  height: 0.875rem;
+  background:
+    linear-gradient(45deg, transparent 45%, #fff 45% 55%, transparent 55%) 0
+      0 / 100% 100% no-repeat;
+  -webkit-mask:
+    linear-gradient(45deg, transparent 30%, #000 30% 35%, transparent 35%) 0 60% / 65% 4px no-repeat,
+    linear-gradient(135deg, transparent 30%, #000 30% 35%, transparent 35%) 50% 60% / 50% 4px no-repeat;
+}
+
+input[type="checkbox"].ios-check:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Range slider */
+input[type="range"].ios-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--val, 50%),
+    rgba(255, 255, 255, 0.10) var(--val, 50%)
+  );
+  border-radius: 9999px;
+  outline: none;
+}
+input[type="range"].ios-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 9999px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+input[type="range"].ios-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 9999px;
+  border: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+/* ============================================================
+   Typography helpers
+   ============================================================ */
+
+/* Big metric number */
+.metric {
+  font-family: var(--font-display);
+  font-feature-settings: "tnum", "ss01";
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+/* Mono uppercase label */
+.label-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;            /* 11px */
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Tabular numerics — apply on any number ≥ 14px */
+.num,
+[data-num] {
+  font-feature-settings: "tnum", "ss01";
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   Typography scale helpers
+   Use these classes directly on elements.
+   ============================================================ */
+
+/* Serif — emotional headlines only (section titles, day-status, assistant) */
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+/* Display hero — e.g. big score or splash number */
+.t-display-hero {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display-hero);
+  font-weight: 400;
+  letter-spacing: var(--tr-display-hero);
+  line-height: 0.94;
+}
+
+/* Display */
+.t-display {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
+  font-weight: 400;
+  letter-spacing: var(--tr-display);
+  line-height: 0.98;
+}
+
+/* H1 — section headline, serif */
+.t-h1 {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h1);
+  font-weight: 400;
+  letter-spacing: var(--tr-h1);
+  line-height: 1.02;
+}
+
+/* H2 — card title, ui sans */
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  letter-spacing: var(--tr-h2);
+  line-height: 1.2;
+  font-feature-settings: "ss01";
+}
+
+/* H3 — row title, ui sans */
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: var(--tr-h3);
+  line-height: 1.3;
+  font-feature-settings: "ss01";
+}
+
+/* Body */
+.t-body {
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.55;
+}
+
+/* Meta — captions, sub-labels */
+.t-meta {
+  font-family: var(--font-display);
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+/* Label — mono uppercase */
+.t-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* Stat — big tabular number */
+.t-stat {
+  font-family: var(--font-display);
+  font-size: var(--fs-stat);
+  font-weight: 600;
+  letter-spacing: var(--tr-display);
+  line-height: 1.0;
+  font-feature-settings: "tnum", "ss01";
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+
+/* Aurora container — fluid width (--container-max), 56px horizontal padding */
+.aurora-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* App shell — same fluid cap for the outermost content column (App.tsx). */
+.app-container {
+  width: 100%;
+  max-width: var(--container-max);
+}
+
+/* 12-column grid with 24px gutter */
+.aurora-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+/* Common column spans (use in grid children) */
+.col-5  { grid-column: span 5 / span 5;  }
+.col-7  { grid-column: span 7 / span 7;  }
+.col-12 { grid-column: span 12 / span 12; }
+
+/* Card base — 32px padding, 24px radius, Aurora glass */
+.aurora-card {
+  padding: var(--space-xl);
+  border-radius: var(--r-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--line-1);
+  box-shadow: var(--shadow-card);
+}
+
+/* Section spacing between major blocks */
+.aurora-section + .aurora-section {
+  margin-top: var(--space-2xl);
+}
+
+/* ============================================================
+   Focus Mode
+   When a Pomodoro is running, all glass cards dim/blur except
+   the timer widget. The widget opts out via `focus-mode-exempt`.
+   ============================================================ */
+
+.focus-mode-active .glass,
+.focus-mode-active .glass-dark,
+.focus-mode-active .glass-strong,
+.focus-mode-active .aurora-glass {
+  opacity: 0.2;
+  filter: blur(1px) saturate(40%);
+  pointer-events: none;
+  transition:
+    opacity  var(--dur-panel) var(--ease),
+    filter   var(--dur-panel) var(--ease);
+}
+
+.focus-mode-exempt,
+.focus-mode-active .focus-mode-exempt {
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: auto !important;
+  transition:
+    opacity  var(--dur-panel) var(--ease),
+    filter   var(--dur-panel) var(--ease);
+}
+
+/* ============================================================
+   Leaflet map — close the thin sub-pixel seams between tiles
+   (the "two lines crossing in the middle" artifact on the
+   weather map). Each tile is grown by 0.5px so neighbours
+   overlap instead of leaving a gap — imperceptible on imagery.
+   ============================================================ */
+.leaflet-tile {
+  width: 256.5px !important;
+  height: 256.5px !important;
+}
+
+/* ============================================================
+   Motion — entrance system (CSS-only, IntersectionObserver-driven).
+   .reveal starts hidden; .reveal.in (added when in view) transitions
+   in with a blur-slide-up. --reveal-i staggers grouped siblings.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(12px);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    filter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: calc(var(--reveal-i, 0) * 0.09s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transform: none; filter: none; }
+  .reveal.in {
+    transform: none;
+    filter: none;
+    transition: opacity 0.7s ease;
+    transition-delay: calc(var(--reveal-i, 0) * 0.09s);
+  }
+}
+
+/* ============================================================
+   Setzling — photographic background + legibility veil.
+   Fixed full-bleed layers behind the app shell (z 0/1); content
+   sits at z-index 2 (see AppShell).
+   ============================================================ */
+.stage {
+  position: fixed; inset: 0; z-index: 0;
+  background: #070b08 url("/setzling/bg.png") center 46% / cover no-repeat;
+}
+.veil {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7,11,8,0.86) 0%, rgba(7,11,8,0.40) 22%, rgba(7,11,8,0) 38%, rgba(7,11,8,0) 62%, rgba(7,11,8,0.40) 78%, rgba(7,11,8,0.86) 100%),
+    linear-gradient(180deg, rgba(7,11,8,0.62) 0%, rgba(7,11,8,0) 24%, rgba(7,11,8,0) 74%, rgba(7,11,8,0.60) 100%);
+}
+.dim {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: #040705; opacity: 0.16;
+}
+
+/* ============================================================
+   Abendrot — alternate theme (design handoff, calibrated reference
+   pair with Setzling). Same custom properties, warm sunset values.
+   Toggled via data-theme="abendrot" on the app-shell root (App.tsx).
+   Placed BEFORE the Lernzeit override below so Lernzeit's green
+   study ground still wins over the photo regardless of theme.
+   ============================================================ */
+[data-theme="abendrot"] {
+  --text-1: #F4EFEA;
+  --text-2: rgba(244, 239, 234, 0.66);
+  --text-3: rgba(244, 239, 234, 0.42);
+  --text-4: rgba(244, 239, 234, 0.28);
+  --line-1: rgba(244, 239, 234, 0.12);
+  --line-2: rgba(244, 239, 234, 0.22);
+  --line-3: rgba(244, 239, 234, 0.34);
+
+  --accent:      #E8592F;                     /* glowing sun disc, from the horizon */
+  --accent-deep: #B23C22;
+  --accent-soft: rgba(232, 89, 47, 0.16);
+
+  --warn: #D9A75E;                            /* wichtig — ochre */
+  --crit: #B8503F;                            /* kritisch — ember */
+  --ok:   #E8592F;                            /* erledigt — sun */
+
+  --cal-uni:      #E8592F;                    /* = accent */
+  --cal-klausur:  #B8503F;                    /* = crit */
+  --cal-privat:   #D9A75E;                    /* = warn */
+  --cal-familie:  #8C93A8;                    /* dusk blue-grey, from the sky */
+  --cal-freunde:  #C99B7A;                    /* warm sand, shifted red-orange */
+  --cal-arbeit:   #A9917C;                    /* dry olive/stone, warmed */
+  --cal-default:  rgba(244, 239, 234, 0.42);
+
+  --accent-dim: #4A2A20;                      /* dark muted ember ash — calm 0% state */
+
+  --subject-1:  #D2703F;   /* terracotta */
+  --subject-2:  #8C93A8;   /* dusk blue-grey, from the sky (cool contrast) */
+  --subject-3:  #D4A052;   /* ochre gold */
+  --subject-4:  #C97B87;   /* dusty rose */
+  --subject-5:  #9B6B8C;   /* muted plum */
+  --subject-6:  #E0937A;   /* muted coral */
+  --subject-7:  #6E7C93;   /* slate blue, from shadow (cool contrast) */
+  --subject-8:  #B8894A;   /* warm bronze */
+  --subject-9:  #8A9270;   /* sage-olive, from silhouette foliage */
+  --subject-10: #C9A876;   /* warm sand */
+  --subject-11: #8C4A4A;   /* deep burgundy */
+  --subject-12: #B584A0;   /* dusty mauve */
+}
+[data-theme="abendrot"] .stage {
+  background: #0e0b0d url("/setzling/abendrot.png") center 40% / cover no-repeat;
+}
+[data-theme="abendrot"] .veil {
+  background:
+    linear-gradient(90deg, rgba(14,11,13,0.86) 0%, rgba(14,11,13,0.40) 22%, rgba(14,11,13,0) 38%, rgba(14,11,13,0) 62%, rgba(14,11,13,0.40) 78%, rgba(14,11,13,0.86) 100%),
+    linear-gradient(180deg, rgba(14,11,13,0.62) 0%, rgba(14,11,13,0) 24%, rgba(14,11,13,0) 74%, rgba(14,11,13,0.60) 100%);
+}
+[data-theme="abendrot"] .dim {
+  background: #070509;
+}
+[data-theme="abendrot"] ::selection {
+  background-color: rgba(232, 89, 47, 0.34);
+  color: #fff;
+}
+
+/* ── Schleier hinter dem Alert-Pop-up, je Thema ─────────────────────────────
+   Beisammen statt in jedem Themenblock verstreut, damit die Toene beim
+   Vergleichen nebeneinander stehen und nicht auseinanderlaufen.
+   Zwei Faelle weichen deutlich ab:
+   · Glas ist absichtlich viel heller und dafuer staerker verschwommen — ein
+     dichter Schleier wuerde den Schreibtisch zudecken, also genau das, wofuer
+     es das Thema gibt. Die Trennung uebernimmt hier die Unschaerfe.
+   · Die hellen Papier-Themes bekommen ihren eigenen Tintenton statt Schwarz
+     und bleiben duenner: auf Creme wirkt derselbe Wert doppelt so schwer. */
+[data-theme="abendrot"]   { --overlay-bg: rgba(14, 11, 13, 0.58); }
+[data-theme="nachtblau"]  { --overlay-bg: rgba(6, 10, 20, 0.58); }
+[data-theme="glas"]       { --overlay-bg: rgba(17, 17, 27, 0.30); --overlay-blur: 20px; }
+[data-theme="kupferstich"]{ --overlay-bg: rgba(24, 42, 94, 0.30); --overlay-blur: 8px; }
+[data-theme="arkadien"]   { --overlay-bg: rgba(38, 44, 26, 0.30); --overlay-blur: 8px; }
+
+/* ============================================================
+   Glas — die durchsichtige Fassung (Paul, Aug 2026).
+   Kein eigenes Hintergrundbild: die Buehne bleibt LEER, damit das
+   durchscheint, was hinter dem Fenster liegt — auf dem Mac der
+   Schreibtisch (electron/main.cjs oeffnet das Fenster mit
+   transparent + vibrancy; macOS blurrt den Desktop dann selbst).
+   Im Browser ohne Fenstertransparenz faellt es auf den dunklen
+   Grundton zurueck, bleibt also benutzbar statt kaputt.
+   Farbe wie von Paul gewuenscht: Tokyo Night / Catppuccin Mocha,
+   also blau-lila statt schwarz, und nur getont, nicht deckend.
+   ============================================================ */
+[data-theme="glas"] {
+  --text-1: #EDEDF4;
+  --text-2: rgba(237, 237, 244, 0.68);
+  --text-3: rgba(237, 237, 244, 0.44);
+  --text-4: rgba(237, 237, 244, 0.30);
+  --line-1: rgba(237, 237, 244, 0.14);
+  --line-2: rgba(237, 237, 244, 0.24);
+  --line-3: rgba(237, 237, 244, 0.36);
+
+  /* Noch durchsichtiger als die Foto-Themes: hier traegt die Lesbarkeit
+     allein der Blur, weil dahinter ein beliebiger Schreibtisch liegen kann.
+     ACHTUNG, hier steckt eine Falle: --glass-blur weichzeichnet nur SEITEN-
+     inhalt hinter der Karte. Der Schreibtisch dahinter wird von macOS selbst
+     verwischt (vibrancy in electron/main.cjs) — an dieser Zahl zu drehen macht
+     ihn also NICHT unschaerfer, sie wirkt nur dort, wo Karten einander
+     ueberlappen. Die Staerke der Schreibtisch-Unschaerfe haengt am Material,
+     nicht an einem Pixelwert. */
+  /* Der Grundton ist jetzt AM BERGBILD GEMESSEN, nicht von Catppuccin geliehen.
+     Ausgewertet wurde public/setzling/nachtblau.jpg (auf 96 px verkleinert,
+     Pixel unter 12 % und ueber 92 % Helligkeit verworfen): 96 % der Flaeche
+     liegen auf Farbton 210, der gesaettigtste Punkt bei H208/S90/L15. Das Bild
+     hat also praktisch EINEN Farbton — deshalb traegt ihn hier auch alles. */
+  --glass-bg:       rgba(20, 32, 46, 0.17);   /* derselbe Blauton, nur ein Hauch */
+  --glass-blur:     80px;
+  --glass-saturate: 1.7;
+
+  /* accent = gesaettigtster Nicht-Schatten-Ton, normalisiert auf S 75 / L 58 —
+     die Formel aus src/lib/photoThemes.ts, damit dieses Thema nach denselben
+     Regeln entsteht wie die Foto-Themes. */
+  --accent:      #4497E4;                     /* H209 S75 L58 — Mondlicht auf Schnee */
+  --accent-deep: #1F73C1;                     /* gleicher Farbton, 14 Punkte dunkler */
+  --accent-soft: rgba(68, 151, 228, 0.16);
+
+  /* Kaum abdunkeln: hinter dem Fenster liegt der Schreibtisch, und den soll
+     auch ein Dialog nicht zumauern. Die Trennung macht hier die Unschaerfe. */
+  --overlay-bg:   rgba(11, 20, 31, 0.30);
+  --overlay-blur: 14px;
+
+  /* Warnung und Kritisch muessen WARM sein: der Akzent ist kuehl, und auf einem
+     durchgehend blauen Bild faellt ein weiteres Blau gar nicht auf. Der
+     Kontrast entsteht ueber die Temperatur, nicht ueber die Helligkeit. */
+  --warn: #DCBA6A;                            /* Mondgold, Richtung Bernstein */
+  --crit: #D37E69;                            /* warmer Fels */
+  --ok:   #4497E4;
+
+  --cal-uni:      #4497E4;
+  --cal-klausur:  #D37E69;
+  --cal-privat:   #DCBA6A;
+  --cal-familie:  #94BDD1;                    /* Gletscher */
+  --cal-freunde:  #616CB8;                    /* Daemmerblau */
+  --cal-arbeit:   #8396AF;                    /* Stahl */
+  --cal-default:  rgba(237, 237, 244, 0.44);
+
+  --accent-dim: #192C3E;                      /* Nachthimmel, entsaettigt */
+
+  /* Alle aus derselben Familie wie das Bild — mit drei bewusst warmen
+     Ausreissern, sonst waeren zwoelf Faecher nicht auseinanderzuhalten. */
+  --subject-1:  #69BED3;   /* Eis */
+  --subject-2:  #94BDD1;   /* Gletscher */
+  --subject-3:  #8396AF;   /* Stahl */
+  --subject-4:  #C3D3DF;   /* Firn */
+  --subject-5:  #354F8D;   /* Tiefblau */
+  --subject-6:  #616CB8;   /* Daemmerung */
+  --subject-7:  #B17E68;   /* Fels (warm) */
+  --subject-8:  #D8BB79;   /* Mondgold (warm) */
+  --subject-9:  #5E7687;   /* Schiefer */
+  --subject-10: #D9E3E8;   /* Schnee */
+  --subject-11: #3F99A6;   /* Petrol */
+  --subject-12: #ADB8C2;   /* Nebel */
+}
+[data-theme="glas"] .stage {
+  /* Der eine Punkt, auf den es ankommt: nichts malen. */
+  background: transparent;
+}
+[data-theme="glas"] .veil {
+  /* Nur ein Hauch an den Raendern, damit Text am Rand nicht auf einem
+     womoeglich hellen Schreibtisch steht. Kein Abdunkeln der Mitte. */
+  background:
+    linear-gradient(90deg, rgba(17,17,27,0.24) 0%, rgba(17,17,27,0) 28%, rgba(17,17,27,0) 72%, rgba(17,17,27,0.24) 100%),
+    linear-gradient(180deg, rgba(17,17,27,0.20) 0%, rgba(17,17,27,0) 20%, rgba(17,17,27,0) 80%, rgba(17,17,27,0.18) 100%);
+}
+/* Menues und Overlays: ebenfalls leichter, sonst stehen sie als dichte Kloetze
+   in einer sonst fast unsichtbaren Oberflaeche. */
+[data-theme="glas"] .glass-strong {
+  background: rgba(30, 30, 46, 0.46);
+}
+[data-theme="glas"] .dim {
+  background: transparent;
+  opacity: 0;
+}
+/* ASCII-Teich (components/AsciiTeich.tsx): über dem Schleier, unter dem
+   Inhalt (z 2). Blendet langsam ein und während eines Fokus-Timers aus. */
+.ascii-teich {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.2s ease;
+  animation: ascii-teich-ein 2.4s ease both;
+}
+.ascii-teich--aus { opacity: 0; }
+@keyframes ascii-teich-ein { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .ascii-teich { animation: none; transition: none; }
+}
+[data-theme="glas"] ::selection {
+  background-color: rgba(169, 161, 255, 0.34);
+  color: #fff;
+}
+
+/* ============================================================
+   Nachtblau — Pauls Wahl (Aug 2026): mondbeleuchteter Schneegipfel
+   unter tiefblauem Sternenhimmel (Unsplash, photo-1574610758891).
+   Ruhigstes der drei vorgeschlagenen Motive — viel dunkle Fläche,
+   auf der Karten und Text tragen. Akzent = Mondlicht-Blau nach der
+   photoThemes-Formel (S ~70 %, L ~58 %), Warnung kühles Amber,
+   Kritisch warmer Ton (Ton-Kontrast auf kühlem Grund).
+   ============================================================ */
+[data-theme="nachtblau"] {
+  --text-1: #EDF1F7;
+  --text-2: rgba(237, 241, 247, 0.66);
+  --text-3: rgba(237, 241, 247, 0.42);
+  --text-4: rgba(237, 241, 247, 0.28);
+  --line-1: rgba(237, 241, 247, 0.12);
+  --line-2: rgba(237, 241, 247, 0.22);
+  --line-3: rgba(237, 241, 247, 0.34);
+
+  --accent:      #4A83DC;                     /* Mondlicht auf Schnee */
+  --accent-deep: #2F5FAE;
+  --accent-soft: rgba(74, 131, 220, 0.16);
+
+  --overlay-bg:   rgba(6, 10, 20, 0.56);      /* Blauton des Nachthimmels */
+  --overlay-blur: 8px;
+
+  --warn: #D9B36A;                            /* wichtig — kühles Amber */
+  --crit: #C9705A;                            /* kritisch — warmer Fels */
+  --ok:   #4A83DC;                            /* erledigt — Mondlicht */
+
+  --cal-uni:      #4A83DC;                    /* = accent */
+  --cal-klausur:  #C9705A;                    /* = crit */
+  --cal-privat:   #D9B36A;                    /* = warn */
+  --cal-familie:  #97A6BD;                    /* Schneegrau-Blau */
+  --cal-freunde:  #9D8CB8;                    /* Nachtflieder */
+  --cal-arbeit:   #7C8AA0;                    /* Stahlgrau */
+  --cal-default:  rgba(237, 241, 247, 0.42);
+
+  --accent-dim: #1B2A45;                      /* dunkles Nachtblau — ruhiger 0%-Zustand */
+
+  --subject-1:  #5B8DD6;   /* Mondblau */
+  --subject-2:  #97A6BD;   /* Schneegrau */
+  --subject-3:  #D4B168;   /* Mondgold (warmer Kontrast) */
+  --subject-4:  #7FA6C9;   /* Gletscher */
+  --subject-5:  #8D7FB8;   /* Nachtflieder */
+  --subject-6:  #C98B7A;   /* warmer Fels (Kontrast) */
+  --subject-7:  #5F7A99;   /* Schiefer */
+  --subject-8:  #A8B8A0;   /* Firn-Salbei */
+  --subject-9:  #6BA0A8;   /* Eismeer */
+  --subject-10: #C0CBD9;   /* Sternweiß */
+  --subject-11: #4A5D8C;   /* Tiefblau */
+  --subject-12: #B584A0;   /* Dusty Mauve */
+}
+[data-theme="nachtblau"] .stage {
+  background: #060a14 url("/setzling/nachtblau.jpg") center 40% / cover no-repeat;
+}
+[data-theme="nachtblau"] .veil {
+  /* Deutlich zurueckgenommen (0.86 → 0.52 an den Raendern): das Glas darueber
+     ist jetzt fast durchsichtig, also muss der Schleier weniger abdunkeln,
+     sonst sieht man vom Berg nur noch die Mitte. Die Lesbarkeit am Rand
+     uebernimmt der Blur der Karten. Ton blau-lila wie das Glas. */
+  background:
+    linear-gradient(90deg, rgba(12,12,24,0.52) 0%, rgba(12,12,24,0.22) 22%, rgba(12,12,24,0) 38%, rgba(12,12,24,0) 62%, rgba(12,12,24,0.22) 78%, rgba(12,12,24,0.52) 100%),
+    linear-gradient(180deg, rgba(12,12,24,0.38) 0%, rgba(12,12,24,0) 24%, rgba(12,12,24,0) 74%, rgba(12,12,24,0.36) 100%);
+}
+[data-theme="nachtblau"] .dim {
+  background: #0a0a16;
+  opacity: 0.07;                              /* statt 0.16 — Foto bleibt offen */
+}
+[data-theme="nachtblau"] ::selection {
+  background-color: rgba(74, 131, 220, 0.34);
+  color: #fff;
+}
+
+/* ============================================================
+   Kupferstich — third theme (design handoff). The first LIGHT
+   theme: a cobalt-blue duotone engraving (knight on stairs) on
+   cream paper. Exactly two source colors carry the scheme —
+   paper cream #F6F1D8 and cobalt ink #2B50C4 (darkest: navy
+   #182A5E). Inverted logic vs. the photo themes: dark ink text
+   on light ground, and the veil BRIGHTENS the image edges with
+   cream instead of darkening them.
+   ============================================================ */
+[data-theme="kupferstich"] {
+  /* Surfaces — paper instead of ink-dark */
+  --ink-0: #F6F1D8;                          /* the paper itself */
+  --ink-1: #F2ECD2;
+  --ink-2: #EDE6CA;                          /* solid cards */
+  --ink-3: #EAE2C4;                          /* nested rows, chips */
+  --ink-4: #E2D9B8;                          /* hover / active */
+  --glass-bg: rgba(246, 241, 216, 0.66);     /* cream glass */
+
+  /* Text / lines — navy ink, only alpha varies */
+  --text-1: #182A5E;
+  --text-2: rgba(24, 42, 94, 0.66);
+  --text-3: rgba(24, 42, 94, 0.46);
+  --text-4: rgba(24, 42, 94, 0.30);
+  --line-1: rgba(24, 42, 94, 0.14);
+  --line-2: rgba(24, 42, 94, 0.24);
+  --line-3: rgba(24, 42, 94, 0.36);
+  --fill-0: rgba(24, 42, 94, 0.04);
+  --fill-1: rgba(24, 42, 94, 0.06);
+
+  /* Accent — cobalt ink; marks on accent stay cream (the second "print color") */
+  --accent:      #2B50C4;
+  --accent-deep: #1B3592;
+  --accent-soft: rgba(43, 80, 196, 0.14);
+  --on-accent:   #F6F1D8;
+
+  /* Status — deliberately OUTSIDE the blue duotone so signals cut through */
+  --warn:      #B07714;                      /* wichtig — ochre, dark enough for cream */
+  --warn-soft: rgba(176, 119, 20, 0.14);
+  --crit:      #C0304E;                      /* kritisch — rose */
+  --crit-soft: rgba(192, 48, 78, 0.12);
+  --ok:        #2B50C4;                      /* erledigt = accent */
+  --ok-soft:   rgba(43, 80, 196, 0.12);
+
+  --cal-uni:      #2B50C4;                   /* = accent */
+  --cal-klausur:  #C0304E;                   /* = crit */
+  --cal-privat:   #B07714;                   /* = warn */
+  --cal-familie:  #1F7A8C;                   /* teal ink — cool secondary */
+  --cal-freunde:  #8A6B2F;                   /* sepia */
+  --cal-arbeit:   #56618A;                   /* slate ink */
+  --cal-default:  rgba(24, 42, 94, 0.46);
+
+  --accent-dim: #C8D0E8;                     /* washed cobalt — calm 0% on paper */
+
+  /* Subjects — a plate of printing inks: cobalts + the status hues' family */
+  --subject-1:  #2B50C4;   /* cobalt */
+  --subject-2:  #5C7BD9;   /* lighter cobalt */
+  --subject-3:  #B07714;   /* ochre */
+  --subject-4:  #C0304E;   /* rose */
+  --subject-5:  #6B4FA3;   /* violet ink */
+  --subject-6:  #A34F86;   /* magenta ink */
+  --subject-7:  #1F7A8C;   /* teal ink */
+  --subject-8:  #8A6B2F;   /* sepia */
+  --subject-9:  #4A7A4E;   /* green ink */
+  --subject-10: #7A6455;   /* umber */
+  --subject-11: #182A5E;   /* navy */
+  --subject-12: #B0584E;   /* terracotta ink */
+
+  /* Legibility: cream halo instead of a dark glow — every glyph gets a
+     paper-colored aura so text pops over the busy engraving lines. */
+  --shadow-text:
+    0 0 18px rgba(246, 241, 216, 0.92),
+    0 0 6px rgba(246, 241, 216, 0.95),
+    0 1px 2px rgba(246, 241, 216, 0.9);
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 30px 60px -30px rgba(24, 42, 94, 0.30);
+
+  /* Tailwind-mapped tokens (@theme literals) — must follow the flip too,
+     or utility-styled text (Lernzeit stats etc.) stays photo-theme grey. */
+  --color-bg:             #F6F1D8;
+  --color-bg-elev:        #F2ECD2;
+  --color-surface:        rgba(246, 241, 216, 0.66);
+  --color-surface-strong: rgba(246, 241, 216, 0.88);
+  --color-hairline:       rgba(24, 42, 94, 0.14);
+  --color-fg:           #182A5E;
+  --color-fg-secondary: rgba(24, 42, 94, 0.66);
+  --color-fg-tertiary:  rgba(24, 42, 94, 0.46);
+  --color-accent: #2B50C4;
+  --color-blue:   #2B50C4;
+  --shadow-soft:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 30px 60px -30px rgba(24, 42, 94, 0.30);
+  --shadow-pop:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 30px 60px -20px rgba(24, 42, 94, 0.35);
+}
+/* Aurora cards carry a literal near-black drop shadow — soften to navy ink. */
+[data-theme="kupferstich"] .aurora .card {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) inset, 0 30px 60px -30px rgba(24, 42, 94, 0.30);
+}
+/* Rotating engraving plate — the stage shows the SHARP original; the frosted
+   crossfade lives in .dim (above). --kbg-sharp/--kbg are set inline on the app
+   root (App.tsx, persisted index, cycled via the ⟳ button in the settings). */
+[data-theme="kupferstich"] .stage {
+  background: #F6F1D8 var(--kbg-sharp, url("/setzling/kupferstich/knight.jpg")) center 30% / cover no-repeat;
+}
+/* Veil BRIGHTENS: cream gradients keep the engraving's center visible while
+   text sits in calmed paper-colored margins. Fades with the glass slider —
+   at 0 the original plate must be truly untouched. Sits ABOVE .dim (z2) so
+   the edge-calming still reads over the frosted image. */
+[data-theme="kupferstich"] .veil {
+  z-index: 2;
+  opacity: var(--kbg-mix);
+  background:
+    linear-gradient(90deg, rgba(246,241,216,0.92) 0%, rgba(246,241,216,0.52) 22%, rgba(246,241,216,0.05) 40%, rgba(246,241,216,0.05) 60%, rgba(246,241,216,0.52) 78%, rgba(246,241,216,0.92) 100%),
+    linear-gradient(180deg, rgba(246,241,216,0.70) 0%, rgba(246,241,216,0.05) 26%, rgba(246,241,216,0.05) 74%, rgba(246,241,216,0.68) 100%);
+}
+/* Frosted glass over the whole engraving. The .dim layer sits at z-index 1
+   (below the app content at z 2, above the stage at z 0), so its backdrop blur
+   softens ONLY the busy engraving lines behind it — text and cards stay sharp.
+   This is the main "cleaner" lever: a light cream frost calms the sharp lines
+   without hiding the motif. Morgens keeps it light (--kbg-frost tuned lower);
+   Lernzeit overrides to a touch denser below. Both values are easy to nudge. */
+[data-theme="kupferstich"] {
+  /* --frost comes from the settings slider (0 = untouched original plate,
+     0.72 = near-opaque milk glass). Two derived knobs:
+       --kbg-frost — the cream-wash alpha (Lernzeit adds +0.10 below)
+       --kbg-mix   — how far the frosted (pre-blurred) image has faded in;
+                     reaches 1 by slider ≈ 0.25, so blur arrives quickly and
+                     the wash keeps building on top. At 0 both are 0 → the
+                     SHARP original is fully visible, nothing in front. */
+  --kbg-frost: var(--frost, 0.20);
+  --kbg-mix: min(1, calc(var(--frost, 0.20) * 4));
+}
+/* Frosted glass, baked into the ASSET (see public/setzling/kupferstich/*-frost.jpg,
+   ffmpeg gblur). Runtime blur on the fixed stage — via filter OR backdrop-filter —
+   hits a Chromium repaint bug that leaves black bands where the page scrolled
+   away, so the blur ships pre-rendered instead: .dim carries the pre-blurred
+   plate + the cream wash and crossfades over the sharp stage via --kbg-mix. */
+[data-theme="kupferstich"] .dim {
+  background:
+    linear-gradient(rgba(246, 241, 216, var(--kbg-frost)), rgba(246, 241, 216, var(--kbg-frost))),
+    var(--kbg, url("/setzling/kupferstich/knight-frost.jpg")) center 30% / cover no-repeat;
+  opacity: var(--kbg-mix);
+}
+[data-theme="kupferstich"] ::selection {
+  background-color: rgba(43, 80, 196, 0.20);
+  color: #182A5E;
+}
+/* ── SideRail — vertical icon cluster, fixed to the right edge, centered ── */
+.side-rail {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.side-rail-panel {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 232px;
+  z-index: 50;
+  /* Solid themed surface — a translucent panel disappears over the light
+     frosted Kupferstich background. */
+  background: var(--ink-2);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+}
+
+/* Label rows inside the settings popover. */
+.settings-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-3); font-weight: 500;
+}
+/* Startseite: Original / Still — zwei Hälften einer Pille. */
+.intro-schalter {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 2px;
+  border-radius: 999px; border: 1px solid var(--line-1); background: var(--fill-1);
+}
+.intro-schalter-knopf {
+  min-height: 40px; border-radius: 999px; font-size: 12px; color: var(--text-3);
+  transition: color var(--dur-micro) var(--ease), background-color var(--dur-micro) var(--ease);
+}
+.intro-schalter-knopf:hover { color: var(--text-1); }
+.intro-schalter-knopf.an {
+  color: var(--accent); background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.intro-schalter-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Tiere-Wahl: sechs Knöpfe in zwei Reihen statt einer Pille mit zwei. */
+.teich-schalter { grid-template-columns: repeat(3, 1fr); border-radius: 16px; }
+.teich-schalter .intro-schalter-knopf { min-height: 32px; border-radius: 13px; }
+/* Compact themed range for the glass-transparency control in the TopNav. */
+.frost-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 88px; height: 3px; border-radius: 999px;
+  background: var(--line-2); cursor: pointer; outline: none;
+}
+.frost-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--on-accent);
+  box-shadow: 0 1px 3px rgba(24, 42, 94, 0.35);
+}
+.frost-slider::-moz-range-thumb {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--on-accent); border-width: 2px;
+}
+/* The weather card's anchor surface flips to strong paper — near-black
+   would swallow the navy ink text everywhere inside it. */
+[data-theme="kupferstich"] .glass-dark {
+  background: rgba(246, 241, 216, 0.94);
+}
+/* The frosted glass already calms the engraving under the day score, so no
+   backing box is needed — the cream text-halo alone keeps it legible. */
+
+/* Lernzeit: trade the photo for a calm green ground. */
+[data-view="lernzeit"] .stage {
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(174,203,130,0.10) 0%, rgba(7,11,8,0) 46%),
+    linear-gradient(168deg, #0e1a12 0%, #16261a 52%, #0a130d 100%);
+}
+[data-view="lernzeit"] .veil { opacity: 0.5; }
+
+/* AUSSER im durchsichtigen Thema.
+ * Dort ist die Buehne bewusst leer, damit der Schreibtisch durchscheint — der
+ * deckende Verlauf oben wuerde ausgerechnet die Lernzeit zur einzigen
+ * undurchsichtigen Ansicht machen. Das Gruen bleibt, aber nur noch als Hauch:
+ * genug, dass es nach Lernzeit aussieht, wenig genug, dass dahinter der
+ * Schreibtisch steht wie in jeder anderen Ansicht dieses Themas.
+ * In allen Foto-Themen bleibt es beim deckenden Grund von oben. */
+[data-theme="glas"][data-view="lernzeit"] .stage {
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(174,203,130,0.08) 0%, rgba(7,11,8,0) 46%),
+    linear-gradient(168deg, rgba(14,26,18,0.34) 0%, rgba(22,38,26,0.26) 52%, rgba(10,19,13,0.38) 100%);
+}
+/* …except on paper: Kupferstich's Lernzeit keeps its own pinned plate — the
+   two hands (human + machine, spark between them). Glass tracks the slider
+   with a +0.10 offset (dense stats want a touch more calm), so slider 0
+   still leaves a light frost here while Morgens shows the pure original. */
+[data-theme="kupferstich"][data-view="lernzeit"] {
+  --kbg-frost: calc(var(--frost, 0.20) + 0.10);
+  --kbg-mix: min(1, calc((var(--frost, 0.20) + 0.10) * 4));
+}
+[data-theme="kupferstich"][data-view="lernzeit"] .stage {
+  background: #F6F1D8 url("/setzling/kupferstich/fingers.jpg") center / cover no-repeat;
+}
+[data-theme="kupferstich"][data-view="lernzeit"] .dim {
+  background:
+    linear-gradient(rgba(246, 241, 216, var(--kbg-frost)), rgba(246, 241, 216, var(--kbg-frost))),
+    url("/setzling/kupferstich/fingers-frost.jpg") center / cover no-repeat;
+}
+
+/* ============================================================
+   Arkadien — fourth theme: warm Romantic / Hudson-River-School
+   oil landscapes on parchment. Same LIGHT-theme + glass logic as
+   Kupferstich but a warm earthen palette (forest-green accent,
+   golden-ochre + terracotta status, bistre ink text). Plates
+   rotate from public/setzling/arkadien/; the wash is warm cream.
+   ============================================================ */
+[data-theme="arkadien"] {
+  /* Surfaces — warm parchment */
+  --ink-0: #F2E9D6;                          /* the paper itself */
+  --ink-1: #EEE4CD;
+  --ink-2: #E9DDC2;                          /* solid cards */
+  --ink-3: #E4D7B8;                          /* nested rows, chips */
+  --ink-4: #DCCDA8;                          /* hover / active */
+  --glass-bg: rgba(242, 233, 214, 0.66);     /* warm cream glass */
+
+  /* Text / lines — deep bistre, only alpha varies */
+  --text-1: #33291B;
+  --text-2: rgba(51, 41, 27, 0.66);
+  --text-3: rgba(51, 41, 27, 0.46);
+  --text-4: rgba(51, 41, 27, 0.30);
+  --line-1: rgba(51, 41, 27, 0.14);
+  --line-2: rgba(51, 41, 27, 0.24);
+  --line-3: rgba(51, 41, 27, 0.36);
+  --fill-0: rgba(51, 41, 27, 0.04);
+  --fill-1: rgba(51, 41, 27, 0.06);
+
+  /* Accent — deep foliage green; marks on it stay warm cream */
+  --accent:      #556B36;
+  --accent-deep: #3F5228;
+  --accent-soft: rgba(85, 107, 54, 0.16);
+  --on-accent:   #F2E9D6;
+
+  /* Status — golden ochre + autumn terracotta, distinct from the green */
+  --warn:      #B07A1E;                      /* wichtig — golden ochre */
+  --warn-soft: rgba(176, 122, 30, 0.14);
+  --crit:      #A6412E;                      /* kritisch — terracotta red */
+  --crit-soft: rgba(166, 65, 46, 0.12);
+  --ok:        #556B36;                      /* erledigt = accent */
+  --ok-soft:   rgba(85, 107, 54, 0.14);
+
+  --cal-uni:      #556B36;                   /* = accent */
+  --cal-klausur:  #A6412E;                   /* = crit */
+  --cal-privat:   #B07A1E;                   /* = warn */
+  --cal-familie:  #6E8CA0;                   /* misty sky blue — cool secondary */
+  --cal-freunde:  #A6774A;                   /* warm sienna */
+  --cal-arbeit:   #7A7156;                   /* drab olive-brown */
+  --cal-default:  rgba(51, 41, 27, 0.46);
+
+  --accent-dim: #C8CDB0;                     /* washed olive — calm 0% on paper */
+
+  /* Subjects — a plate of oil pigments: greens, ochres, siennas, sky blue */
+  --subject-1:  #556B36;   /* olive green */
+  --subject-2:  #B07A1E;   /* ochre */
+  --subject-3:  #A6412E;   /* terracotta */
+  --subject-4:  #6E8CA0;   /* misty sky blue (cool contrast) */
+  --subject-5:  #7A5B3A;   /* umber */
+  --subject-6:  #8C6D28;   /* dark gold */
+  --subject-7:  #4F6B5A;   /* teal-green */
+  --subject-8:  #A6774A;   /* sienna */
+  --subject-9:  #3F5228;   /* deep forest */
+  --subject-10: #9B8560;   /* warm sand */
+  --subject-11: #6E7C5A;   /* sage */
+  --subject-12: #8A4B3A;   /* brick */
+
+  /* Legibility: warm cream halo so text pops over the busy paintings. */
+  --shadow-text:
+    0 0 18px rgba(242, 233, 214, 0.92),
+    0 0 6px rgba(242, 233, 214, 0.95),
+    0 1px 2px rgba(242, 233, 214, 0.9);
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 30px 60px -30px rgba(51, 41, 27, 0.30);
+
+  /* Tailwind-mapped tokens — must follow the flip (utility-styled text). */
+  --color-bg:             #F2E9D6;
+  --color-bg-elev:        #EEE4CD;
+  --color-surface:        rgba(242, 233, 214, 0.66);
+  --color-surface-strong: rgba(242, 233, 214, 0.88);
+  --color-hairline:       rgba(51, 41, 27, 0.14);
+  --color-fg:           #33291B;
+  --color-fg-secondary: rgba(51, 41, 27, 0.66);
+  --color-fg-tertiary:  rgba(51, 41, 27, 0.46);
+  --color-accent: #556B36;
+  --color-blue:   #556B36;
+  --shadow-soft:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 30px 60px -30px rgba(51, 41, 27, 0.30);
+  --shadow-pop:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 30px 60px -20px rgba(51, 41, 27, 0.35);
+
+  /* Glass knobs — identical logic to Kupferstich (see there). */
+  --kbg-frost: var(--frost, 0.20);
+  --kbg-mix: min(1, calc(var(--frost, 0.20) * 4));
+}
+[data-theme="arkadien"] .aurora .card {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 30px 60px -30px rgba(51, 41, 27, 0.30);
+}
+[data-theme="arkadien"] .stage {
+  background: #F2E9D6 var(--kbg-sharp, url("/setzling/arkadien/valley.jpg")) center / cover no-repeat;
+}
+[data-theme="arkadien"] .veil {
+  z-index: 2;
+  opacity: var(--kbg-mix);
+  background:
+    linear-gradient(90deg, rgba(242,233,214,0.92) 0%, rgba(242,233,214,0.52) 22%, rgba(242,233,214,0.05) 40%, rgba(242,233,214,0.05) 60%, rgba(242,233,214,0.52) 78%, rgba(242,233,214,0.92) 100%),
+    linear-gradient(180deg, rgba(242,233,214,0.70) 0%, rgba(242,233,214,0.05) 26%, rgba(242,233,214,0.05) 74%, rgba(242,233,214,0.68) 100%);
+}
+[data-theme="arkadien"] .dim {
+  background:
+    linear-gradient(rgba(242, 233, 214, var(--kbg-frost)), rgba(242, 233, 214, var(--kbg-frost))),
+    var(--kbg, url("/setzling/arkadien/valley-frost.jpg")) center / cover no-repeat;
+  opacity: var(--kbg-mix);
+}
+[data-theme="arkadien"] ::selection {
+  background-color: rgba(85, 107, 54, 0.22);
+  color: #33291B;
+}
+[data-theme="arkadien"] .glass-dark {
+  background: rgba(242, 233, 214, 0.94);
+}
+/* Lernzeit keeps the currently-selected painting (no pinned plate), just a
+   touch more frost for the dense stats. Higher specificity beats the shared
+   green Lernzeit ground rule above. */
+[data-theme="arkadien"][data-view="lernzeit"] {
+  --kbg-frost: calc(var(--frost, 0.20) + 0.10);
+  --kbg-mix: min(1, calc((var(--frost, 0.20) + 0.10) * 4));
+}
+[data-theme="arkadien"][data-view="lernzeit"] .stage {
+  background: #F2E9D6 var(--kbg-sharp, url("/setzling/arkadien/valley.jpg")) center / cover no-repeat;
+}
+[data-theme="arkadien"][data-view="lernzeit"] .dim {
+  background:
+    linear-gradient(rgba(242, 233, 214, var(--kbg-frost)), rgba(242, 233, 214, var(--kbg-frost))),
+    var(--kbg, url("/setzling/arkadien/valley-frost.jpg")) center / cover no-repeat;
+}
+
+/* ── Usage Card ─────────────────────────────────────────────────────────────── */
+.usage-section { margin-top: 0.75rem; }
+.usage-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-3); margin-bottom: 0.35rem; font-weight: 600;
+}
+.usage-rows { display: flex; flex-direction: column; gap: 0.3rem; }
+.usage-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.4rem 0.6rem; border-radius: 0.5rem;
+  background: rgba(255,255,255,0.03); font-size: 0.85rem;
+}
+.usage-model { font-family: monospace; font-size: 0.8rem; color: var(--text-1); }
+.usage-stats { display: flex; gap: 0.8rem; font-size: 0.75rem; color: var(--text-3); }
+.usage-in { color: #60a5fa; }
+.usage-out { color: #4ade80; }
+.usage-calls { color: var(--text-4); }
+

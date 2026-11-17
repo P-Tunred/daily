@@ -1,0 +1,166 @@
+/* Still — der ruhige erste Bildschirm (components/StillIntro.tsx).
+   Fast nichts sichtbar, alles angedeutet: keine Karten außer „Heute", keine
+   Skalen, der Akzent nur dort, wo etwas Fortschritt meint (Ring, Linien,
+   Haken, Herkunftspunkt). Farben kommen aus dem Thema — Still läuft in jedem.
+   Kleine Schrift nimmt --text-2, nie --text-3: im Glas-Thema sind die Stufen
+   Alpha-Werte, und über einem hellen Schreibtisch säuft --text-3 ab. */
+
+.still-intro {
+  --still-hair: var(--line-1);
+  min-height: calc(100vh - 80px);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  column-gap: clamp(40px, 6vw, 88px);
+  padding-right: 44px; /* frei für die Leiste rechts */
+  font-weight: 300;
+}
+/* Überschriften erben sonst die Serifen-/Display-Schrift aus index.css. */
+.still-intro h1, .still-intro h2 { font-family: var(--font-sans); font-feature-settings: normal; }
+.still-intro h2 { letter-spacing: 0; line-height: 1.3; }
+
+.still-datum { grid-column: 1 / -1; display: flex; align-items: center; min-height: 44px; font-size: 13px; color: var(--text-2); text-shadow: var(--shadow-text); }
+.still-datum b { margin-left: 8px; font-weight: 400; color: var(--text-1); }
+
+/* Satz des Tages */
+.still-held { grid-column: 1; grid-row: 2; align-self: center; padding: 32px 0; }
+.still-satz {
+  max-width: 14em; text-wrap: balance;
+  font-size: clamp(34px, 3.6vw, 52px); line-height: 1.12; font-weight: 300; letter-spacing: -0.03em;
+  color: var(--text-1); text-shadow: var(--shadow-text);
+}
+.still-satz .leise { color: var(--text-3); }
+
+.still-meta { margin-top: 36px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 28px; }
+.still-meta .hb, .still-meta .hs { margin: 0; }
+.still-herkunft { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: 13px; color: var(--text-2); text-shadow: var(--shadow-text); }
+.still-punkt { width: 5px; height: 5px; flex: none; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.still-herkunft.lokal .still-punkt { width: 7px; height: 7px; background: none; box-shadow: inset 0 0 0 1px var(--text-2); }
+
+/* Leise Wege — Text, keine Knöpfe mit Fläche; 40 px hoch zum Anfassen. */
+.still-weg {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0;
+  background: none; border: 0; cursor: pointer;
+  font: inherit; font-size: 13px; color: var(--text-2); text-shadow: var(--shadow-text);
+  transition: color 160ms var(--ease), transform 160ms var(--ease);
+}
+.still-weg:hover { color: var(--text-1); transform: translateY(-1px); }
+.still-weg:focus-visible, .still-intro .nib summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Neu im Brain — dieselbe Komponente wie im Original, hier in der Still-Sprache. */
+.still-intro .nib { position: relative; text-shadow: var(--shadow-text); }
+.still-intro .nib summary {
+  list-style: none; cursor: pointer; display: inline-flex; align-items: center; min-height: 40px;
+  font-size: 13px; color: var(--text-2); transition: color 160ms var(--ease);
+}
+.still-intro .nib summary::-webkit-details-marker { display: none; }
+.still-intro .nib summary::after { content: "›"; margin-left: 6px; transition: transform 200ms var(--ease); }
+.still-intro .nib[open] summary::after { transform: rotate(90deg); }
+.still-intro .nib summary:hover { color: var(--text-1); }
+/* Aufgeklappt als Glasblatt unter der Zeile, damit der Satz oben nicht springt. */
+.still-intro .nib-inhalt {
+  position: absolute; top: calc(100% + 6px); left: -20px; z-index: 6; width: min(400px, 80vw);
+  padding: 18px 20px; border-radius: 20px; background: var(--glass-bg); border: 1px solid var(--line-1);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-pop);
+}
+.still-intro .nib ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.still-intro .nib li { display: flex; flex-direction: column; gap: 2px; }
+.still-intro .nib-titel { font-size: 13px; color: var(--text-1); }
+.still-intro .nib-punkte { font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+.still-intro .nib-link { display: inline-flex; align-items: center; min-height: 40px; margin-top: 4px; font-size: 12.5px; color: var(--text-2); }
+.still-intro .nib-link:hover { color: var(--text-1); }
+
+/* Zwei Zahlen, kein Rahmen */
+.still-zahlen { grid-column: 1; grid-row: 3; display: flex; }
+.still-zahl { flex: 0 1 240px; min-width: 0; padding-right: 32px; }
+.still-zahl + .still-zahl { padding-left: 32px; border-left: 1px solid var(--still-hair); }
+.still-zahl h2 { font-size: 13px; font-weight: 400; color: var(--text-2); text-shadow: var(--shadow-text); }
+.still-wert {
+  margin-top: 14px; display: flex; align-items: baseline;
+  font-size: 44px; line-height: 1; font-weight: 300; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
+  color: var(--text-1); text-shadow: var(--shadow-text);
+}
+.still-wert .leise { color: var(--text-3); }
+.still-wert small { margin-left: 6px; font-size: 13px; letter-spacing: 0; color: var(--text-2); }
+.still-linie { margin-top: 16px; height: 1px; background: var(--still-hair); overflow: hidden; }
+.still-linie span { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform 600ms var(--ease); }
+.still-unter { margin-top: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px 12px; font-size: 12.5px; color: var(--text-2); text-shadow: var(--shadow-text); }
+.still-ziel { position: relative; }
+.still-ziel button { min-height: 40px; background: none; border: 0; padding: 0; font: inherit; color: var(--text-2); cursor: help; }
+.still-ziel button:hover { color: var(--text-1); }
+.still-ziel button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.still-tip {
+  position: absolute; left: 0; bottom: calc(100% + 2px); z-index: 7; width: 300px; padding: 12px 14px;
+  font-size: 13px; line-height: 1.45; color: var(--text-1); text-shadow: none;
+  border-radius: 16px; background: var(--glass-bg); border: 1px solid var(--line-2); box-shadow: var(--shadow-pop);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  opacity: 0; pointer-events: none; transform: translateY(4px);
+  transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+}
+.still-ziel:hover .still-tip, .still-ziel:focus-within .still-tip { opacity: 1; transform: none; }
+
+/* Heute — die einzige Fläche */
+.still-heute {
+  grid-column: 2; grid-row: 2 / 4; align-self: end; display: flex; flex-direction: column;
+  padding: 24px 28px 12px; border-radius: 28px;
+  background: var(--glass-bg); border: 1px solid var(--line-1);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 40px 80px -48px rgba(0, 0, 0, 0.55);
+}
+.still-heute-kopf { display: flex; align-items: baseline; justify-content: space-between; font-size: 12.5px; color: var(--text-2); }
+.still-heute-kopf h2 { font-size: 13px; font-weight: 400; color: var(--text-2); }
+.still-heute ul { margin: 10px 0 0; padding: 0; list-style: none; }
+.still-heute li + li { border-top: 1px solid var(--still-hair); }
+.still-aufgabe {
+  width: 100%; min-height: 52px; display: flex; align-items: center; gap: 14px; text-align: left;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 300; color: var(--text-1);
+  border-radius: 12px; transition: transform 180ms var(--ease);
+}
+.still-aufgabe:hover { transform: translateX(2px); }
+.still-aufgabe:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.still-haken {
+  width: 15px; height: 15px; flex: none; border-radius: 50%; border: 1px solid var(--kat);
+  display: grid; place-items: center; color: var(--ink-1);
+}
+.still-haken svg { width: 9px; height: 9px; opacity: 0; transition: opacity 180ms var(--ease); }
+.still-aufgabe.erledigt .still-haken { background: var(--accent); border-color: var(--accent); }
+.still-aufgabe.erledigt .still-haken svg { opacity: 1; }
+.still-aufgabe-text { flex: 1; min-width: 0; }
+.still-aufgabe.erledigt .still-aufgabe-text { color: var(--text-2); text-decoration: line-through; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; }
+.still-alt { flex: none; font-size: 12px; color: var(--crit); }
+.still-frei { margin: 16px 0 14px; font-size: 26px; line-height: 1.2; font-weight: 300; letter-spacing: -0.02em; color: var(--text-1); }
+.still-frei .leise { color: var(--text-3); }
+.still-heute > .still-weg { margin: -6px 0 6px; align-self: flex-start; }
+
+/* Mehr */
+.still-mehr {
+  grid-column: 1 / -1; grid-row: 4; justify-self: center; margin-top: 18px;
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-height: 44px; padding: 0 16px;
+  background: none; border: 0; cursor: pointer; font: inherit; font-size: 12.5px; color: var(--text-2);
+  transition: color 160ms var(--ease);
+}
+.still-mehr:hover { color: var(--text-1); }
+.still-mehr svg { width: 14px; height: 14px; animation: still-bob 2.6s var(--ease) infinite; }
+.still-mehr:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
+@keyframes still-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .still-intro *, .still-intro *::before, .still-intro *::after { animation: none !important; transition: none !important; }
+}
+
+/* Telefon: eine Spalte, die Leiste rechts bleibt frei. */
+@media (max-width: 760px) {
+  .still-intro { display: flex; flex-direction: column; min-height: auto; padding-right: 46px; padding-top: 8px; }
+  .still-held { padding: 48px 0 0; }
+  .still-satz { font-size: 32px; line-height: 1.16; }
+  .still-meta { margin-top: 26px; gap: 2px 20px; }
+  .still-zahlen { margin-top: 48px; }
+  .still-zahl { flex: 1 1 0; padding-right: 16px; }
+  .still-zahl + .still-zahl { padding-left: 16px; }
+  .still-wert { font-size: 38px; }
+  .still-heute { margin-top: 40px; padding: 20px 20px 10px; border-radius: 24px; }
+  .still-intro .nib-inhalt { left: 0; width: min(320px, 78vw); }
+  .still-tip { width: 240px; }
+}

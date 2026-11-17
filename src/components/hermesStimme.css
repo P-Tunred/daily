@@ -1,0 +1,81 @@
+/* Mit Hermes sprechen — direkt unter „Dein Tag zum Anhören", in derselben
+   Sprache: mono, versal, leise. Der Unterschied liegt im Punkt: hohl in Ruhe,
+   gefüllt, sobald das Gespräch läuft. Beim Zuhören atmet ein Ring mit Pauls
+   Stimme (--hs-pegel, per transform — auf dem Compositor, nicht im Layout),
+   beim Denken pulsiert der Punkt langsam. */
+
+.hs { margin-top: 4px; }
+
+.hs-zeile { display: flex; align-items: center; gap: 14px; }
+
+.hs-knopf {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 2px; margin-left: -2px;
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-2); text-shadow: var(--shadow-text);
+  transition: color 160ms var(--ease);
+}
+.hs-knopf:disabled { cursor: not-allowed; opacity: 0.45; }
+
+.hs-zeichen {
+  position: relative;
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 70%, transparent);
+  transition: transform 160ms var(--ease), background-color 200ms var(--ease), color 200ms var(--ease);
+}
+/* Der Ring, der beim Zuhören mit dem Pegel wächst. */
+.hs-zeichen::after {
+  content: ""; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0; transform: scale(1);
+  transition: transform 90ms linear, opacity 160ms var(--ease);
+  pointer-events: none;
+}
+
+.hs-knopf[aria-pressed="true"] .hs-zeichen { background: var(--accent); color: var(--ink-1, #10131a); }
+.hs-hoert .hs-zeichen::after { opacity: 0.7; transform: scale(calc(1 + var(--hs-pegel, 0) * 0.55)); }
+.hs-denkt .hs-zeichen, .hs-versteht .hs-zeichen { animation: hs-atmen 1.6s var(--ease) infinite; }
+/* Hört beim Hörbriefing mit: der Ring steht still und gestrichelt da — es
+   wird gelauscht, nicht aufgenommen. Kein Pegel, sonst tanzte er zum Echo. */
+.hs-mithoeren .hs-zeichen::after { opacity: 0.45; border-style: dashed; transform: scale(1.12); }
+.hs-mithoeren { color: var(--text-1); }
+@keyframes hs-atmen { 50% { opacity: 0.55; transform: scale(0.94); } }
+
+.hs-knopf:not(:disabled):hover, .hs-knopf[aria-pressed="true"] { color: var(--text-1); }
+.hs-knopf:not(:disabled):hover .hs-zeichen { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 5px color-mix(in oklab, var(--accent) 18%, transparent); }
+.hs-knopf:not(:disabled):active .hs-zeichen { transform: scale(0.94); }
+.hs-knopf:focus-visible, .hs-ende:focus-visible, .hs-getan button:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px;
+}
+
+.hs-ende {
+  background: none; border: 0; padding: 4px 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.hs-ende:hover { color: var(--text-1); }
+
+/* Was verstanden wurde und was passiert ist — eine Stufe leiser, eingerückt
+   auf die Höhe des Worts. */
+.hs-leise { padding-left: 38px; display: grid; gap: 4px; }
+.hs-leise p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--text-3); }
+.hs-du { font-style: italic; color: var(--text-2); }
+.hs-getan { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.hs-getan span { color: var(--text-2); }
+.hs-getan.weg span { color: var(--text-3); text-decoration: line-through; }
+.hs-getan button {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-size: 11px; color: var(--text-3);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.hs-getan button:hover { color: var(--text-1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-knopf, .hs-zeichen, .hs-zeichen::after { transition: none; }
+  .hs-denkt .hs-zeichen, .hs-versteht .hs-zeichen { animation: none; }
+  .hs-hoert .hs-zeichen::after, .hs-mithoeren .hs-zeichen::after { transform: none; }
+}

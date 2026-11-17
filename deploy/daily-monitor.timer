@@ -1,0 +1,30 @@
+# Wann der Wächter läuft — und warum genau dann.
+#
+# DIE UHRZEIT IST NICHT GERATEN
+# Die Maschine läuft auf Etc/UTC. Hermes' Kette am Morgen (alles UTC):
+#   04:00  mail-to-drive-daily
+#   04:30  calendar-export-daily
+#   05:00  second-brain-daily + github-daily-newspaper
+#   05:15  morning-status-summary  ← der letzte nötige Lauf, hier entsteht das Briefing
+#
+# Ein Check um 06:00 BERLIN wäre 04:00 UTC gewesen — mitten in der Kette, also
+# jeden Morgen ein Fehlalarm. Deshalb 06:00 UTC = 08:00 Berlin: 45 Minuten
+# Reserve nach dem letzten Upstream-Lauf, und immer noch früh genug, dass Paul
+# es beim Frühstück sieht.
+#
+# Persistent=true, weil die VM auch mal aus ist: dann läuft die Prüfung beim
+# nächsten Start nach, statt den Tag stillschweigend zu überspringen.
+
+[Unit]
+Description=Daily — read-only Prüfung jeden Morgen (06:00 UTC / 08:00 Berlin)
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+# Nicht auf die Sekunde: sonst treffen sich mehrere Timer und die Maschine
+# hat eine Lastspitze, die niemand braucht.
+RandomizedDelaySec=180
+Persistent=true
+Unit=daily-monitor.service
+
+[Install]
+WantedBy=timers.target

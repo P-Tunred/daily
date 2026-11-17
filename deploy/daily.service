@@ -1,0 +1,53 @@
+# systemd-Dienst für Daily auf der VM.
+#
+# Installieren:
+#   sudo cp /opt/daily/app/deploy/daily.service /etc/systemd/system/daily.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now daily
+#
+# Logs:      journalctl -u daily -f
+# Neustart:  sudo systemctl restart daily
+
+[Unit]
+Description=Daily Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=daily
+Group=daily
+WorkingDirectory=/opt/daily/app
+EnvironmentFile=/etc/daily/env
+Environment=NODE_ENV=production
+Environment=DAILY_DATA_DIR=/var/lib/daily
+# Fester Pfad, ausdrücklich NICHT `/usr/bin/env node`.
+# Auf srv1753888 zeigt /usr/local/bin/node auf /root/.hermes/node/bin/node —
+# also auf Hermes' eigene Node-Installation. Über den PATH gefunden, würde der
+# Dienst daran hängen (stirbt mit jedem Hermes-Update) und bräuchte Lesezugriff
+# auf /root/.hermes/, wo Hermes' Google-Token liegt. Beides nicht akzeptabel.
+# Voraussetzung: systemweites Node unter /usr/bin/node (NodeSource-Paket).
+ExecStart=/usr/bin/node -e "require('/opt/daily/app/electron/server.cjs').startServer(Number(process.env.PORT || 4861))"
+Restart=always
+RestartSec=5
+
+# Härtung — der Dienst darf nur das, was er wirklich braucht.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/lib/daily
+
+# Liegen die Hermes-Exporte (Mails, Kalender) unter /root, muss ProtectHome
+# gelockert werden. Dann die Zeile oben auf `ProtectHome=read-only` ändern und
+# die Pfade in /etc/daily/env eintragen:
+#   CALENDAR_JSON_PATH=/root/.hermes/exports/upcoming_events.json
+#   MAIL_REPORT_PATH=/root/.hermes/exports/Mail_Report_Latest.txt
+# Sauberer wäre, die Exporte nach /srv/daily-input/ zu schreiben und nur das
+# freizugeben — dann bleibt ProtectHome=true.
+
+[Install]
+WantedBy=multi-user.target

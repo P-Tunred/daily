@@ -1,0 +1,1249 @@
+/* ============================================================
+   Aurora — Jarvis "Heute" panel styles.
+   All rules scoped under .aurora so nothing else in the app is touched.
+   Tokens (--ink/--text/--accent/…) already exist globally and match.
+   ============================================================ */
+
+.aurora {
+  position: relative;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: var(--font-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif);
+  --font-serif: ui-serif, "New York", "Iowan Old Style", Palatino, Georgia, serif;
+}
+
+/* No panel-level bloom: it produced a visible rectangular edge that clashed
+   with the top nav. The page's global ambient background carries the glow. */
+.aurora > * { position: relative; z-index: 1; }
+
+.aurora .num { font-feature-settings: "tnum", "ss01"; font-variant-numeric: tabular-nums; }
+.aurora button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* ---------- top anchor ---------- */
+.aurora .anchor { display: flex; align-items: center; justify-content: space-between; margin-bottom: clamp(18px, 2.6vw, 36px); }
+.aurora .anchor .l { display: flex; align-items: center; gap: 14px; }
+.aurora .anchor .orb { width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 55%, var(--accent-deep) 100%);
+  box-shadow: 0 0 24px rgba(122,162,255,0.45); position: relative; flex: none; }
+.aurora .anchor .orb::after { content: ""; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid rgba(122,162,255,0.25); animation: aurora-breathe 4s var(--ease) infinite; }
+@keyframes aurora-breathe { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.18); opacity: 0; } }
+.aurora .anchor .date { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--text-3); text-transform: uppercase; }
+.aurora .anchor .date b { color: var(--text-2); font-weight: 500; }
+.aurora .mode-toggle { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); }
+.aurora .mode-toggle button { padding: 6px 16px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--text-3); letter-spacing: 0.01em; transition: all 200ms var(--ease); }
+.aurora .mode-toggle button.on { background: rgba(255,255,255,0.08); color: var(--text-1); box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset; }
+
+/* ---------- Jarvis hero ---------- */
+.aurora .hero { margin-bottom: clamp(24px, 3.4vw, 44px); max-width: 920px; }
+.aurora .hero .kicker { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: clamp(12px, 1.4vw, 18px); }
+.aurora .hero .kicker .pip { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.aurora .hero h1 { font-family: var(--font-serif); font-weight: 400; font-size: clamp(34px, 4.6vw, 52px); line-height: 1.1; letter-spacing: -0.025em; color: var(--text-1); }
+.aurora .hero h1 .soft { color: var(--text-3); }
+.aurora .hero .brief { margin-top: clamp(14px, 1.8vw, 22px); font-family: var(--font-serif); font-size: clamp(19px, 2.4vw, 26px); line-height: 1.4; letter-spacing: -0.015em; color: var(--text-2); max-width: 42ch; }
+.aurora .hero .brief em { color: var(--text-1); font-style: normal; }
+.aurora .hero .brief .accent { color: var(--accent); font-style: normal; }
+.aurora .hero .essential { margin-top: clamp(14px, 1.6vw, 20px); display: inline-flex; align-items: baseline; gap: 14px; }
+.aurora .hero .essential .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--text-4); text-transform: uppercase; }
+.aurora .hero .essential .thing { font-size: 18px; font-weight: 500; color: var(--text-1); letter-spacing: -0.01em; }
+.aurora .hero .agenda { margin-top: clamp(12px, 1.5vw, 18px); display: flex; flex-wrap: wrap; gap: 9px 18px; align-items: center; }
+.aurora .hero .agenda .appt { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.03em; color: var(--text-3); display: inline-flex; gap: 7px; align-items: baseline; }
+.aurora .hero .agenda .appt b { color: var(--accent); font-weight: 600; }
+.aurora .hero .agenda .appt.mail { color: var(--text-4); }
+.aurora .hero .mood { margin-top: clamp(16px, 2vw, 24px); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.aurora .hero .mood .q { font-size: 14px; color: var(--text-3); }
+.aurora .hero .mood .opts { display: flex; gap: 8px; }
+.aurora .mood-chip { padding: 8px 16px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); font-size: 13px; color: var(--text-2); font-weight: 500; transition: all 200ms var(--ease); }
+.aurora .mood-chip:hover { background: rgba(255,255,255,0.07); border-color: var(--line-2); }
+.aurora .mood-chip.sel { background: var(--accent-soft); border-color: rgba(122,162,255,0.3); color: #cfdbff; }
+
+/* ---------- grid ---------- */
+/* align-items defaults to stretch: cards in the same row are always equal height */
+.aurora .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(14px, 1.7vw, 24px); }
+.aurora .card { background: var(--glass-bg, rgba(17,20,27,0.55)); backdrop-filter: blur(28px) saturate(1.4);
+  border: 1px solid var(--line-1); border-radius: 24px; padding: clamp(20px, 2.4vw, 30px); position: relative; overflow: hidden;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 30px 60px -30px rgba(0,0,0,0.6); }
+.aurora .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.aurora .card-head .ttl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; font-weight: 500; }
+.aurora .card-head .right { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--text-4); text-transform: uppercase; }
+.aurora .span-6 { grid-column: span 6; } .aurora .span-7 { grid-column: span 7; } .aurora .span-5 { grid-column: span 5; } .aurora .span-12 { grid-column: span 12; }
+
+/* focus / tasks */
+.aurora .focus-row-wrap { position: relative; border-top: 1px solid var(--line-1); }
+.aurora .focus-row-wrap:first-of-type { border-top: 0; }
+.aurora .focus-row { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 15px 0; width: 100%; text-align: left; transition: opacity 300ms var(--ease); }
+.aurora .focus-del { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: var(--text-4); font-size: 11px; opacity: 0; background: var(--ink-2, #11141B); transition: all 160ms var(--ease); }
+.aurora .focus-row-wrap:hover .focus-del { opacity: 1; }
+.aurora .focus-del:hover { color: var(--crit); background: var(--crit-soft); }
+.aurora .check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--text-4); flex: none; display: grid; place-items: center; transition: all 240ms var(--ease); position: relative; }
+.aurora .check.crit { border-color: var(--crit); } .aurora .check.warn { border-color: var(--warn); }
+.aurora .check svg { width: 12px; height: 12px; opacity: 0; transform: scale(0.5); transition: all 240ms var(--ease); }
+.aurora .focus-row.done .check { background: var(--ok); border-color: var(--ok); }
+.aurora .focus-row.done .check svg { opacity: 1; transform: scale(1); }
+.aurora .focus-row .name { display: block; font-size: 16px; color: var(--text-1); font-weight: 500; letter-spacing: -0.005em; transition: color 300ms var(--ease); }
+.aurora .focus-row .sub { display: block; font-size: 13px; color: var(--text-3); margin-top: 3px; }
+.aurora .focus-row.done .name { color: var(--text-4); text-decoration: line-through; text-decoration-color: var(--text-4); }
+.aurora .focus-row.done .sub { color: var(--text-4); }
+.aurora .focus-row .when { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.aurora .focus-row.done .when { color: var(--ok); }
+.aurora .focus-row:hover .check { border-color: var(--text-2); }
+.aurora .focus-row.done:hover .check { border-color: var(--ok); }
+.aurora .empty-row { padding: 15px 0; font-size: 14px; color: var(--text-4); }
+/* Scrollable task list — every open task stays reachable without growing the card */
+.aurora .focus-list { max-height: 340px; overflow-y: auto; margin: 0 -4px; padding: 0 4px; }
+
+/* „Was heute zaehlt" waechst auf die Hoehe der Karte daneben.
+   ───────────────────────────────────────────────────────────────────────────
+   Vorher stand die Liste auf festen 340 px. Stand daneben „Dein Horizont" mit
+   mehr Inhalt, dehnte das Raster die Todo-Karte trotzdem mit — die Liste blieb
+   aber bei 340 und scrollte, waehrend unter dem Eingabefeld Leerraum stand.
+   Man musste also in einer Liste scrollen, neben der Platz frei war.
+
+   `flex: 1 1 0` ist der Kern: mit Basis 0 traegt die Liste nichts zur
+   natuerlichen Hoehe der Karte bei. Damit bestimmt die NACHBARKARTE die
+   Zeilenhoehe, und die Liste fuellt, was uebrig bleibt. Andersherum — Liste
+   waechst mit Inhalt — wuerde die Todo-Liste die Zeile aufblaehen und der
+   Horizont bekaeme meterweise Leerraum.
+
+   `min-height` ist der Boden fuer den Fall, dass rechts fast nichts steht:
+   eine Liste, die auf zwei Zeilen zusammenfaellt, waere schlimmer als eine,
+   die scrollt. `min-height: 0` am Flex-Kind ist zusaetzlich noetig, sonst
+   weigert sich ein Flex-Element zu schrumpfen und scrollt nie. */
+.aurora .card-heute { display: flex; flex-direction: column; }
+.aurora .card-heute .focus-list {
+  max-height: none;
+  flex: 1 1 0;
+  min-height: min(220px, 40vh);
+  overflow-y: auto;
+}
+/* Kopf und Eingabe behalten ihre Groesse — nur die Liste gibt nach. */
+.aurora .card-heute .card-head,
+.aurora .card-heute .focus-add-form { flex: none; }
+
+@media (max-width: 900px) {
+  /* Einspaltig gibt es keine Nachbarkarte mehr, an der man sich ausrichten
+     koennte. Dann ist die alte feste Hoehe die ehrlichere Loesung — sonst
+     waechst die Liste ins Unendliche und schiebt alles andere weg. */
+  .aurora .card-heute .focus-list { flex: none; max-height: 340px; }
+}
+.aurora .focus-list::-webkit-scrollbar { width: 6px; }
+.aurora .focus-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+.aurora .focus-add-form { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line-1); display: flex; flex-direction: column; gap: 12px; }
+.aurora .focus-add { display: flex; align-items: center; gap: 12px; }
+.aurora .effort-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-left: 24px; }
+.aurora .effort-row .effort-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4); margin-right: 4px; }
+.aurora .effort-chip { padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 500; background: rgba(255,255,255,0.05); color: var(--text-3); border: 1px solid var(--line-1); transition: all 160ms var(--ease); }
+.aurora .effort-chip:hover { color: var(--text-1); border-color: var(--line-2); }
+.aurora .effort-chip.on { background: var(--accent); color: #0A0C12; border-color: var(--accent); }
+.aurora .focus-add .prio-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.04); transition: all 200ms var(--ease); cursor: pointer; }
+.aurora .focus-add .prio-dot:hover { box-shadow: 0 0 0 4px rgba(255,255,255,0.07); }
+.aurora .focus-add input { flex: 1; background: none; border: none; outline: none; color: var(--text-1); font-size: 14px; font-family: inherit; }
+.aurora .focus-add input::placeholder { color: var(--text-4); }
+.aurora .add-btn { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(122,162,255,0.3); font-size: 18px; line-height: 1; display: grid; place-items: center; flex: none; transition: all 200ms var(--ease); }
+.aurora .add-btn:hover:not(:disabled) { background: var(--accent); color: #0A0C12; }
+.aurora .add-btn:disabled { opacity: 0.4; cursor: default; }
+.aurora .cat-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
+
+/* drop zone — "Was heute zählt" accepts a drag from the weekly list */
+.aurora .card.drag-over { outline: 1.5px dashed var(--accent); outline-offset: -1px; }
+
+/* weekly todo backlog — grouped by Rubrik */
+.aurora .week-groups { display: flex; flex-direction: column; gap: 18px; }
+.aurora .week-group-head { display: flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+.aurora .week-group-head .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.aurora .week-group-head .count { color: var(--text-4); margin-left: 2px; }
+.aurora .week-list { display: flex; flex-direction: column; gap: 1px; }
+.aurora .week-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line-1); cursor: grab; }
+.aurora .week-row:first-child { border-top: 0; }
+.aurora .week-row:active { cursor: grabbing; }
+.aurora .week-row.week-row-editing { cursor: default; }
+.aurora .week-main { min-width: 0; flex: 1; }
+/* Title (+ optional description) is a button so clicking it opens the editor. */
+.aurora .week-text-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; width: 100%; }
+.aurora .week-row .text { font-size: 14px; color: var(--text-1); }
+.aurora .week-row .desc { font-size: 12px; line-height: 1.4; color: var(--text-3); }
+.aurora .week-text-btn:hover .text { color: var(--accent); }
+.aurora .week-row .row-actions { display: flex; align-items: center; gap: 8px; flex: none; padding-top: 1px; }
+.aurora .push-btn { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-1); transition: all 160ms var(--ease); opacity: 0; }
+.aurora .week-row:hover .push-btn, .aurora .push-btn:focus-visible { opacity: 1; }
+.aurora .push-btn:hover { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, transparent); background: var(--accent-soft); }
+
+/* Weekly item: description input (add form) + inline editor */
+.aurora .week-desc-input,
+.aurora .week-edit-desc {
+  width: 100%; resize: vertical; min-height: 38px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); border-radius: var(--r-md);
+  padding: 8px 12px; color: var(--text-2); font-family: inherit; font-size: 13px; line-height: 1.45;
+  outline: none; transition: border-color 160ms var(--ease);
+}
+.aurora .week-desc-input { margin-top: 10px; }
+.aurora .week-desc-input:focus,
+.aurora .week-edit-desc:focus { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.aurora .week-desc-input::placeholder,
+.aurora .week-edit-desc::placeholder { color: var(--text-4); }
+.aurora .week-edit { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.aurora .week-edit-title {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); border-radius: var(--r-md);
+  padding: 8px 12px; color: var(--text-1); font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 160ms var(--ease);
+}
+.aurora .week-edit-title:focus { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.aurora .week-edit-actions { display: flex; gap: 8px; }
+.aurora .week-save { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #10180f; background: var(--accent); padding: 6px 14px; border-radius: 999px; transition: opacity 160ms var(--ease); }
+.aurora .week-save:hover { opacity: 0.88; }
+.aurora .week-cancel { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-1); transition: color 160ms var(--ease); }
+.aurora .week-cancel:hover { color: var(--text-1); }
+.aurora .week-edit-head { display: flex; align-items: center; gap: 10px; }
+.aurora .week-edit-head .week-edit-title { flex: 1; }
+
+/* Weekly item meta tags — prio · geplanter Tag · Aufwand · Fach */
+.aurora .week-meta {
+  display: flex; align-items: center; gap: 10px; margin-top: 3px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-4);
+}
+.aurora .week-meta .tag-crit { color: var(--crit); }
+.aurora .week-meta .tag-warn { color: var(--warn); }
+.aurora .week-meta .tag-today { color: var(--accent); }
+/* Für einen Tag nach dieser Woche geplant (meist von Hermes): das Datum statt
+   eines Wochentags, eine Stufe leiser als „heute". */
+.aurora .week-meta .tag-geplant { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* „Später geplant" — unter den Wochengruppen, zugeklappt. Was erst nach dieser
+   Woche dran ist, soll nicht zwischen den Dingen stehen, die jetzt zählen —
+   aber auffindbar bleiben. Kopf in der Sprache der Gruppenköpfe. */
+.aurora .week-spaeter { margin-top: 18px; border-top: 1px solid var(--line-1); padding-top: 10px; }
+.aurora .week-spaeter > summary {
+  display: flex; align-items: center; gap: 9px; min-height: 44px; cursor: pointer; list-style: none;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3);
+  transition: color 160ms var(--ease);
+}
+.aurora .week-spaeter > summary::-webkit-details-marker { display: none; }
+.aurora .week-spaeter > summary::before { content: "▸"; font-size: 9px; transition: transform 160ms var(--ease); }
+.aurora .week-spaeter[open] > summary::before { transform: rotate(90deg); }
+.aurora .week-spaeter > summary:hover { color: var(--text-1); }
+.aurora .week-spaeter > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.aurora .week-spaeter > summary .count { color: var(--text-4); }
+@media (prefers-reduced-motion: reduce) {
+  .aurora .week-spaeter > summary, .aurora .week-spaeter > summary::before { transition: none; }
+}
+.aurora .week-meta .subj-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 999px;
+  margin-right: 4px; vertical-align: middle;
+}
+
+/* deadlines */
+.aurora .deadline { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 15px 0; border-top: 1px solid var(--line-1); }
+.aurora .deadline:first-of-type { border-top: 0; }
+.aurora .deadline .glyph { width: 36px; height: 36px; border-radius: 12px; background: var(--ink-3); display: grid; place-items: center; color: var(--text-2); font-size: 13px; font-weight: 600; flex: none; }
+.aurora .deadline .name { font-size: 15px; color: var(--text-1); font-weight: 500; letter-spacing: -0.005em; }
+.aurora .deadline .name .sub { display: block; font-size: 11px; color: var(--text-4); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+.aurora .countdown { text-align: right; }
+.aurora .countdown .n { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; line-height: 1; display: block; }
+.aurora .countdown .u { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--text-4); text-transform: uppercase; margin-top: 4px; display: block; }
+.aurora .countdown.crit .n { color: var(--crit); } .aurora .countdown.warn .n { color: var(--warn); }
+.aurora .dl-end { display: flex; align-items: center; gap: 12px; }
+.aurora .del-btn { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; color: var(--text-4); font-size: 11px; opacity: 0; transition: all 160ms var(--ease); flex: none; }
+.aurora .deadline:hover .del-btn { opacity: 1; }
+.aurora .del-btn:hover { color: var(--crit); background: var(--crit-soft); }
+
+/* add-event form (Am Horizont) */
+.aurora .card-head .head-add { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); border: 1px solid rgba(122,162,255,0.25); transition: all 160ms var(--ease); }
+.aurora .card-head .head-add:hover { background: var(--accent); color: #0A0C12; }
+.aurora .event-add { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line-1); }
+.aurora .event-kinds { display: flex; gap: 6px; flex-wrap: wrap; }
+.aurora .event-kind { padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; background: rgba(255,255,255,0.05); color: var(--text-3); border: 1px solid var(--line-1); transition: all 160ms var(--ease); }
+.aurora .event-kind:hover { color: var(--text-1); }
+.aurora .event-kind.on { background: var(--accent-soft); color: #cfdbff; border-color: rgba(122,162,255,0.4); }
+.aurora .event-add-row { display: flex; align-items: center; gap: 8px; }
+.aurora .event-add-row input { background: var(--ink-3); border: 1px solid var(--line-1); border-radius: 8px; padding: 8px 10px; color: var(--text-1); font-size: 13px; font-family: inherit; outline: none; min-width: 0; }
+.aurora .event-add-row input:focus { border-color: var(--line-3); }
+.aurora .event-add-row input:not(.event-date) { flex: 1; }
+.aurora .event-add-row .event-date { color: var(--text-2); flex: none; }
+
+/* day status — full-width card, ring + info centered as one group */
+.aurora .day-card { display: flex; flex-direction: column; }
+.aurora .day-body { flex: 1; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: clamp(24px, 4.5vw, 64px); padding: clamp(2px, 1vw, 12px) 0; }
+.aurora .day-info { display: flex; flex-direction: column; gap: 16px; max-width: 560px; }
+.aurora .day-ring-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.aurora .ring-caption { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4); }
+.aurora .au-ring { position: relative; width: 150px; height: 150px; }
+.aurora .au-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.aurora .au-ring .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+.aurora .au-ring .pct { font-size: 46px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-1); line-height: 1; }
+.aurora .au-ring .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+.aurora .day-msg { font-family: var(--font-serif); font-size: clamp(19px, 2.3vw, 24px); line-height: 1.25; letter-spacing: -0.015em; color: var(--text-1); }
+.aurora .day-msg em { color: var(--text-3); font-style: italic; }
+.aurora .day-stats { display: flex; gap: clamp(20px, 2.6vw, 36px); flex-wrap: wrap; }
+.aurora .stat .v { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-1); }
+.aurora .stat .k { font-family: var(--font-mono); font-size: 10px; color: var(--text-4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 5px; }
+
+/* conversation */
+.aurora .conv { background: linear-gradient(180deg, rgba(122,162,255,0.06) 0%, var(--glass-bg, rgba(17,20,27,0.55)) 55%); }
+.aurora .conv-head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+.aurora .conv-head .av { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 55%, var(--accent-deep) 100%); box-shadow: 0 0 22px rgba(122,162,255,0.4); flex: none; }
+.aurora .conv-head .who { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; font-weight: 500; }
+.aurora .conv-head .ts { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-4); letter-spacing: 0.1em; text-transform: uppercase; }
+.aurora .messages { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; max-height: 340px; overflow-y: auto; padding-right: 6px; }
+.aurora .messages::-webkit-scrollbar { width: 6px; }
+.aurora .messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+.aurora .msg { max-width: 74%; animation: aurora-rise 400ms var(--ease) both; }
+@keyframes aurora-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.aurora .msg.jarvis { align-self: flex-start; }
+.aurora .msg.you { align-self: flex-end; }
+.aurora .msg .bubble { padding: 14px 18px; border-radius: 18px; font-size: 15px; line-height: 1.5; }
+.aurora .msg.jarvis .bubble { background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); color: var(--text-1); border-bottom-left-radius: 6px; }
+.aurora .msg.jarvis.lead .bubble { font-family: var(--font-serif); font-size: 19px; letter-spacing: -0.01em; line-height: 1.4; background: transparent; border: none; padding: 0; color: var(--text-1); }
+.aurora .msg.jarvis.lead .bubble em { color: var(--text-3); font-style: italic; }
+.aurora .msg.you .bubble { background: var(--accent-soft); border: 1px solid rgba(122,162,255,0.25); color: #dce6ff; border-bottom-right-radius: 6px; }
+.aurora .quick { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.aurora .quick button { padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); font-size: 13px; color: var(--text-2); font-weight: 500; transition: all 200ms var(--ease); }
+.aurora .quick button:hover { background: rgba(255,255,255,0.07); border-color: var(--line-2); color: var(--text-1); }
+.aurora .quick button.primary { background: var(--accent-soft); border-color: rgba(122,162,255,0.3); color: #cfdbff; }
+.aurora .composer { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 20px; border-radius: 999px; background: rgba(255,255,255,0.03); border: 1px solid var(--line-1); transition: border-color 200ms var(--ease); }
+.aurora .composer:focus-within { border-color: var(--line-3); }
+.aurora .composer input { flex: 1; background: none; border: none; outline: none; color: var(--text-1); font-size: 15px; font-family: inherit; }
+.aurora .composer input::placeholder { color: var(--text-4); }
+.aurora .composer .send { width: 38px; height: 38px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; color: #0A0C12; transition: all 200ms var(--ease); flex: none; }
+.aurora .composer .send:hover { background: #92b3ff; }
+.aurora .composer .send:disabled { background: rgba(255,255,255,0.06); color: var(--text-4); cursor: default; }
+/* ── Morning triage pop-up ─────────────────────────────────────────────── */
+.triage-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  background: rgba(5, 6, 10, 0.62);
+  backdrop-filter: blur(8px);
+  animation: triage-fade 240ms cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes triage-fade { from { opacity: 0; } to { opacity: 1; } }
+.triage-modal {
+  width: 100%; max-width: 540px; max-height: 86vh; overflow-y: auto;
+  background: var(--ink-2, #11141B);
+  border: 1px solid var(--line-2, rgba(255,255,255,0.10));
+  border-radius: 24px; padding: 28px;
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7);
+  animation: triage-rise 320ms cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes triage-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.triage-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+.triage-title { font-family: var(--font-serif, ui-serif, Georgia, serif); font-weight: 400; font-size: 24px; letter-spacing: -0.02em; color: var(--text-1); margin-top: 6px; }
+.triage-auto-note { font-size: 12px; color: var(--ok, #73C9A8); margin-top: 8px; }
+
+/* "Nicht zugeordnet" entry point — slim bar above the Daily panel */
+.triage-deferred-bar { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 18px; border-radius: 14px;
+  background: color-mix(in srgb, var(--warn, #E8B948) 9%, var(--ink-2, #11141B)); border: 1px solid color-mix(in srgb, var(--warn, #E8B948) 28%, transparent);
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-align: left; transition: background 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-deferred-bar:hover { background: color-mix(in srgb, var(--warn, #E8B948) 14%, var(--ink-2, #11141B)); }
+.triage-deferred-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--warn, #E8B948); box-shadow: 0 0 8px var(--warn, #E8B948); flex: none; }
+.triage-deferred-arrow { margin-left: auto; color: var(--text-4); font-size: 16px; }
+.triage-list { display: flex; flex-direction: column; gap: 12px; margin-top: 22px; }
+.triage-item { border: 1px solid var(--line-1); border-radius: 16px; padding: 16px; transition: border-color 200ms cubic-bezier(0.22,1,0.36,1); }
+.triage-item.on { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.triage-item-head { display: flex; align-items: center; gap: 10px; }
+.triage-cb { width: 16px; height: 16px; accent-color: var(--accent); flex: none; cursor: pointer; }
+.triage-item-title { flex: 1; font-size: 15px; font-weight: 500; color: var(--text-1); line-height: 1.35; cursor: pointer; }
+.triage-title-edit { flex: 1; font-size: 15px; font-weight: 500; color: var(--text-1); line-height: 1.35; background: var(--ink-3); border: 1px solid var(--line-2); border-radius: 8px; padding: 6px 10px; outline: none; font-family: inherit; }
+.triage-title-edit:focus { border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.triage-src { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-4); white-space: nowrap; flex: none; }
+.triage-discard { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; color: var(--text-4); font-size: 11px; transition: all 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-discard:hover { color: var(--crit); background: var(--crit-soft); }
+.triage-ctx { font-size: 12px; color: var(--text-3); margin-top: 8px; line-height: 1.45; padding-left: 26px; }
+/* A card heading that opens a fuller view (Posteingang → verwalten). */
+/* Auf- und Zuklappen der Briefing-Karte: ein Griff auf der oberen Kante.
+   Traegt die Karte, damit der Knopf sich an ihrer Kante ausrichten kann. */
+/* Das weggeklappte Briefing.
+   KEIN Glas, kein Rahmen, kein Innenabstand — sonst bliebe eine Karte stehen,
+   und "weggeklappt" waere nur eine kuerzere Karte. Was bleibt, ist eine Zeile
+   von rund 20 px, die im Layout praktisch nicht auftraegt. Sichtbar genug, um
+   den Weg zurueck zu finden; unsichtbar genug, um die Startseite in Ruhe zu
+   lassen. */
+.briefing-strip {
+  display: flex;
+  justify-content: center;
+  margin: -2px 0 2px;
+  /* Die Leiste steht im selben Flex-Container wie die Karten. Ohne eigene
+     Breite wird sie zum schmalen Flex-Element zusammengequetscht, der
+     Herkunftstext bricht auf vier Zeilen um — und aus 20 px werden 52. */
+  width: 100%;
+  flex: none;
+}
+.briefing-strip-label,
+.briefing-strip-meta { white-space: nowrap; }
+.briefing-strip-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 12px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 999px;
+  opacity: 0.5;
+  transition: opacity 180ms cubic-bezier(0.22,1,0.36,1);
+}
+.briefing-strip-btn:hover { opacity: 1; }
+.briefing-strip-btn:focus-visible {
+  opacity: 1;
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+/* Derselbe Strich wie an der offenen Karte — die Form soll wiedererkennbar
+   sein, damit klar ist, dass hier dasselbe wieder aufgeht. */
+.briefing-strip-grip {
+  width: 22px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--text-4);
+  flex: none;
+}
+.briefing-strip-label,
+.briefing-strip-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.briefing-strip-label { color: var(--text-3); }
+.briefing-strip-meta  { color: var(--text-4); }
+
+/* ── Dein Horizont ────────────────────────────────────────────────────────
+   Eine Flaeche, Gruppen nur durch eine ruhige Ueberschrift getrennt. Keine
+   inneren Karten, kein Akkordeon, keine Ampelfarben — der naechste Fixpunkt
+   wird ueber HELLIGKEIT hervorgehoben, nicht ueber Farbe. Zeiten und
+   Countdowns tabellarisch, damit die linke Spalte ruhig steht. */
+.hz { display: flex; flex-direction: column; gap: 18px; }
+.hz-group ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.hz-when-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  margin-bottom: 7px;
+}
+.hz-row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  /* 40 px Trefferhoehe auch ohne Klickbarkeit — die Zeilen sollen atmen,
+     und spaeter kann hier ohne Sprung ein Link draus werden. */
+  min-height: 40px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-1);
+}
+.hz-group ul li:last-child { border-bottom: 0; }
+.hz-when {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.hz-title {
+  font-size: 14px;
+  color: var(--text-2);
+  text-wrap: pretty;
+  /* Lange deutsche Titel duerfen umbrechen statt abgeschnitten zu werden —
+     ein "Zwischenvermietungs…" sagt weniger als zwei Zeilen. */
+  overflow-wrap: anywhere;
+}
+.hz-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+/* Der naechste Fixpunkt — heller, nicht bunter. */
+.hz-row.next .hz-when { color: var(--accent); }
+.hz-row.next .hz-title { color: var(--text-1); font-weight: 500; }
+
+.hz-all {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+  transition: color 160ms cubic-bezier(0.22,1,0.36,1);
+}
+.hz-all:hover { color: var(--text-1); }
+
+@media (max-width: 560px) {
+  /* Auf schmalen Schirmen rutscht die Typmarkierung unter den Titel, statt
+     ihn auf drei Zeichen zusammenzuquetschen. */
+  .hz-row { grid-template-columns: 4rem 1fr; }
+  .hz-tag { grid-column: 2; }
+}
+
+.briefing-card { position: relative; }
+
+/* Die Trefferflaeche — unsichtbar, 44 px hoch, ueber die ganze Breite mittig.
+   Der Strich selbst ist 3 px hoch und waere allein kaum zu treffen; 44 px ist
+   die uebliche Untergrenze fuer Finger. Sie liegt ueber dem Kartenrand, nimmt
+   aber keinen Platz im Fluss ein, verschiebt also nichts. */
+.briefing-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  z-index: 1;
+}
+/* Der sichtbare Strich. Im Ruhezustand nur angedeutet — er soll die Karte
+   nicht anfuehren, sondern bereitliegen, wenn man ihn sucht. */
+.briefing-notch > span {
+  display: block;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--text-4);
+  opacity: 0.35;
+  transition: opacity 160ms cubic-bezier(0.22,1,0.36,1),
+              width 160ms cubic-bezier(0.22,1,0.36,1),
+              background-color 160ms cubic-bezier(0.22,1,0.36,1);
+}
+.briefing-card:hover .briefing-notch > span { opacity: 0.6; }
+.briefing-notch:hover > span {
+  opacity: 1;
+  width: 34px;                      /* zieht sich unter dem Zeiger leicht breiter */
+  background: var(--text-2);
+}
+/* Tastaturfokus schlaegt alles: hier MUSS der Knopf zu sehen sein, sonst
+   springt der Fokus auf etwas Unsichtbares und niemand weiss, wo er steht. */
+.briefing-notch:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+.briefing-notch:focus-visible > span { opacity: 1; background: var(--text-2); }
+
+.card-title-btn { cursor: pointer; transition: color 160ms cubic-bezier(0.22,1,0.36,1); }
+.card-title-btn:hover { color: var(--text-1) !important; }
+.card-title-btn:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 3px; border-radius: 4px; }
+
+/* Clickable inbox rows / digest cards — the whole row opens the action sheet,
+   so it needs to feel touchable without adding chrome. */
+.digest-row { cursor: pointer; border-radius: 6px; transition: background 160ms cubic-bezier(0.22,1,0.36,1); }
+.digest-row:hover { background: var(--fill-0); }
+.digest-row:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+
+/* Duplicate clarification — Jarvis asks instead of silently double-tracking */
+.triage-dup { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 10px 0 0 26px; padding: 8px 12px; border-radius: 12px; background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+.triage-dup-q { font-size: 12px; color: var(--text-2); line-height: 1.4; flex: 1 1 100%; }
+.triage-dup button { padding: 4px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 500; transition: all 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-dup-yes { background: var(--warn-soft); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent); }
+.triage-dup-yes:hover { background: var(--warn); color: var(--on-accent); }
+.triage-dup-no { color: var(--text-3); border: 1px solid var(--line-1); }
+.triage-dup-no:hover { color: var(--text-1); border-color: var(--line-2); }
+.triage-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; padding-left: 26px; }
+.triage-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); }
+.triage-seg button { padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--text-3); transition: all 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-seg button.on { background: var(--accent-soft); color: var(--accent); }
+.triage-date { background: var(--ink-3); border: 1px solid var(--line-1); border-radius: 999px; padding: 6px 12px; color: var(--text-1); font-size: 12px; font-family: inherit; outline: none; }
+.triage-date:focus { border-color: var(--line-3); }
+.triage-subhead { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4); margin: 22px 0 10px; }
+.triage-cal-row { display: flex; flex-direction: column; gap: 9px; padding: 12px 0; border-top: 1px solid var(--line-1); }
+.triage-cal-row:first-of-type { border-top: 0; }
+.triage-cal-main { display: flex; align-items: center; gap: 12px; }
+.triage-cal-time { font-family: var(--font-mono); font-size: 12px; color: var(--accent); flex: none; width: 3rem; }
+.triage-cal-title { flex: 1; font-size: 14px; color: var(--text-1); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.triage-cal-actions { display: flex; gap: 6px; flex-wrap: wrap; padding-left: calc(3rem + 12px); }
+.triage-cal-actions .cal-act { padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--line-1); color: var(--text-2); background: rgba(255,255,255,0.04); transition: all 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-cal-actions .cal-act:hover { color: var(--text-1); border-color: var(--line-2); }
+.triage-cal-actions .cal-x { width: 28px; padding: 5px 0; border-radius: 999px; font-size: 12px; border: 1px solid var(--line-1); color: var(--text-3); background: transparent; transition: all 160ms cubic-bezier(0.22,1,0.36,1); }
+.triage-cal-actions .cal-x:hover { color: var(--crit); border-color: color-mix(in srgb, var(--crit) 40%, transparent); background: var(--crit-soft); }
+.triage-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.triage-later { padding: 10px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--text-3); transition: color 160ms ease; }
+.triage-later:hover { color: var(--text-1); }
+.triage-apply { padding: 10px 22px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #0A0C12; background: var(--accent); transition: background 160ms ease; }
+.triage-apply:hover { background: #92b3ff; }
+
+/* "Jarvis kennt dich" — quiet, collapsible memory of learned preferences */
+.aurora .jarvis-knows { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-1); }
+.aurora .knows-toggle { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-4); transition: color 160ms var(--ease); }
+.aurora .knows-toggle:hover { color: var(--text-2); }
+.aurora .knows-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.aurora .know-chip { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px 5px 12px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); font-size: 12px; color: var(--text-2); }
+.aurora .know-chip button { color: var(--text-4); font-size: 11px; line-height: 1; transition: color 160ms var(--ease); }
+.aurora .know-chip button:hover { color: var(--crit); }
+
+/* Voice + proactive controls */
+.aurora .hero .speak-btn { margin-top: clamp(12px, 1.4vw, 16px); display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; background: var(--accent-soft); border: 1px solid rgba(122,162,255,0.3); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #cfdbff; transition: background 200ms var(--ease), border-color 200ms var(--ease), color 200ms var(--ease); }
+.aurora .hero .speak-btn:hover, .aurora .hero .speak-btn.on { background: var(--accent); color: #0A0C12; border-color: var(--accent); }
+.aurora .jarvis-settings { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-1); }
+.aurora .jset { padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-1); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); transition: background 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease); }
+.aurora .jset:hover { color: var(--text-2); border-color: var(--line-2); }
+.aurora .jset.on { background: var(--accent-soft); border-color: rgba(122,162,255,0.3); color: #cfdbff; }
+
+.aurora .typing { display: inline-flex; gap: 4px; align-items: center; padding: 16px 18px; }
+.aurora .typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); animation: aurora-blink 1.4s infinite both; }
+.aurora .typing span:nth-child(2) { animation-delay: 0.2s; } .aurora .typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aurora-blink { 0%,60%,100% { opacity: 0.3; } 30% { opacity: 1; } }
+
+@media (max-width: 900px) {
+  .aurora .span-6, .aurora .span-7, .aurora .span-5, .aurora .span-12 { grid-column: span 12; }
+  .aurora .hero h1 { font-size: 40px; } .aurora .hero .brief { font-size: 21px; }
+  .aurora .day-body { flex-direction: column; text-align: center; }
+  .aurora .day-info { align-items: center; }
+}
+
+/* Knoepfe der Fokus-Karte. Bewusst schlicht: die Karte hat pro Vorgang bis zu
+   vier davon, und vier auffaellige Knoepfe pro Zeile waeren eine Werkzeugleiste,
+   keine Uebersicht. Trefferflaeche trotzdem >= 40 px hoch (padding + Zeilenhoehe),
+   damit sie auf dem Telefon zu treffen sind. */
+.fokus-btn {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: none;
+  border: 1px solid var(--line-1);
+  border-radius: 999px;
+  padding: 7px 11px;
+  cursor: pointer;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.fokus-btn:hover:not(:disabled) { color: var(--text-1); border-color: var(--line-2); }
+.fokus-btn:active:not(:disabled) { transform: scale(0.96); }
+.fokus-btn:disabled { opacity: 0.4; cursor: default; }
+.fokus-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* "Loeschen" / "Ausblenden" im Horizont. Im Ruhezustand unsichtbar: die Karte
+   soll eine Uebersicht bleiben, keine Werkzeugleiste. Sichtbar wird der Knopf
+   erst beim Zeigen auf die Zeile — und bei Tastaturfokus, sonst waere er per
+   Tastatur unerreichbar. */
+.hz-row { position: relative; }
+.hz-weg {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  background: none;
+  border: 0;
+  padding: 6px 8px;
+  margin-left: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 160ms var(--ease), color 160ms var(--ease);
+}
+.hz-row:hover .hz-weg { opacity: 0.7; }
+.hz-weg:hover { opacity: 1 !important; color: var(--crit); }
+.hz-weg:focus-visible {
+  opacity: 1;
+  color: var(--text-2);
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* "In den Fokus" an der Todo-Zeile. Wie der Loesch-Knopf daneben: unsichtbar,
+   bis man auf die Zeile zeigt — die Liste soll eine Liste bleiben, keine
+   Knopfleiste. Sitzt links vom ✕, damit die gefaehrlichere Aktion (Loeschen)
+   aussen bleibt und man sie nicht im Vorbeigehen trifft. */
+.focus-fokus {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--text-4);
+  font-size: 13px;
+  opacity: 0;
+  background: var(--ink-2, #11141B);
+  border: 0;
+  cursor: pointer;
+  transition: opacity 160ms var(--ease), color 160ms var(--ease);
+}
+.focus-row-wrap:hover .focus-fokus { opacity: 1; }
+.focus-fokus:hover { color: var(--accent); }
+.focus-fokus:focus-visible {
+  opacity: 1;
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* "noch nicht im Kalender" an einer Horizont-Zeile. Immer sichtbar, nicht erst
+   beim Zeigen: es ist eine Warnung, keine Aktion. Ruhig gesetzt, solange es
+   nur "noch nicht" heisst — deutlich, sobald es endgueltig fehlgeschlagen ist. */
+.hz-sync {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.hz-sync.warn { color: var(--crit); }
+
+/* ── Abo-Karte ───────────────────────────────────────────────────────────────
+   Eine Kostenuebersicht liest man anders als eine Aufgabenliste: erst die
+   Summe, dann die Aufteilung. Deshalb steht der Monatsbetrag gross oben und
+   nicht als Beiwerk in der Kopfzeile — Groessenkontrast statt Farbe.
+
+   Die Messzeilen sind tabellarisch gesetzt, damit die Prozentwerte der drei
+   Dienste untereinander stehen und vergleichbar sind. Ohne feste Spalten
+   wandert die Zahl je nach Balkenlaenge, und genau der Vergleich ist der
+   Grund, warum man hersieht. */
+.abo-summe {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-1);
+}
+.abo-summe-zahl {
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+.abo-summe-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+
+.abo-liste { list-style: none; margin: 0; padding: 0; }
+.abo-row { padding: 14px 0; border-bottom: 1px solid var(--line-1); }
+.abo-liste li:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.abo-kopf {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-height: 22px;
+}
+.abo-name { font-size: 14px; font-weight: 500; color: var(--text-2); }
+/* Die Planstufe ist eine Marke, keine Ueberschrift: als Chip gesetzt, damit
+   "Coding Lite" nicht mit dem Dienstnamen um Aufmerksamkeit ringt. */
+.abo-plan {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  border: 1px solid var(--line-1);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.abo-anbieter {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+/* Preis rechts, tabellarisch — drei Betraege untereinander sollen eine Spalte
+   ergeben und nicht drei zufaellige Positionen. */
+.abo-preis {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.abo-preis.leer { color: var(--text-4); }
+
+.abo-mess {
+  display: grid;
+  grid-template-columns: 1fr 3.4rem auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.abo-spur {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--line-1);
+  overflow: hidden;
+}
+/* scaleX statt width: die Fuellung bleibt beim Einblenden auf dem Compositor,
+   es gibt kein Layout je Bild. */
+.abo-fuell {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: scaleX(var(--f, 0));
+  transform-origin: left center;
+  transition: transform 700ms var(--ease);
+}
+.abo-row.voll .abo-fuell { background: var(--warn); }
+.abo-zahl {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-2);
+}
+.abo-reset {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+/* Nebenangaben — 5-Stunden-Fenster, absolute Credits, Vertragsende. Bewusst
+   eine Stufe dunkler: sie erklaeren die Zahl darueber, sie ersetzen sie nicht. */
+.abo-detail {
+  margin-top: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.abo-detail .eng { color: var(--warn); }
+
+/* Ein ganzer Satz vertraegt keine Versalien. `.abo-detail` ist fuer knappe
+   Marken gedacht ("5 H 42 %"); sobald da eine Erklaerung steht, wird sie in
+   Normalschrift gesetzt — sonst liest man sie schlicht nicht. */
+.abo-notiz {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-4);
+  text-wrap: pretty;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+.abo-notiz .bis {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Kein Wert vorhanden. Absichtlich KEIN leerer Balken: der sieht aus wie
+   "nichts verbraucht" und bedeutet das Gegenteil. Stattdessen eine Kante in
+   Ton — schmal genug, dass die Karte ruhig bleibt, deutlich genug, dass man
+   die Zeile nicht fuer eine normale haelt. */
+.abo-fehlt {
+  margin: 10px 0 0;
+  padding: 8px 0 8px 12px;
+  border-left: 2px solid var(--crit);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.abo-fehlt .wann { color: var(--text-4); }
+
+.abo-fuss {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-1);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-4);
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abo-fuell { transition: none; }
+}
+@media (max-width: 560px) {
+  /* Auf schmalen Schirmen rutscht das Reset-Datum unter den Balken, statt die
+     Spalte auf drei Zeichen zusammenzuquetschen. */
+  .abo-mess { grid-template-columns: 1fr 3.4rem; }
+  .abo-reset { grid-column: 1 / -1; text-align: right; }
+}
+
+/* ── Abgewiesene Hermes-Beitraege ────────────────────────────────────────────
+   Erscheint nur, wenn es etwas gibt (siehe RejectStrip.tsx). Deshalb darf er
+   deutlich sein: er ist nie Hintergrundrauschen. Trotzdem kein Kasten in
+   Signalfarbe — eine Kante genuegt, der Text traegt die Nachricht. */
+.rj {
+  border: 1px solid var(--line-1);
+  border-left: 2px solid var(--crit);
+  border-radius: 12px;
+  background: var(--crit-soft, rgba(224, 152, 110, 0.08));
+}
+.rj-kopf {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 13px;
+}
+.rj-punkt {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--crit);
+  flex: none;
+}
+.rj-text { flex: 1; min-width: 0; }
+.rj-wann { color: var(--text-4); }
+.rj-mehr {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  transition: color 160ms var(--ease);
+  flex: none;
+}
+.rj-kopf:hover .rj-mehr { color: var(--text-2); }
+.rj-kopf:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 12px; }
+.rj-details { padding: 0 14px 12px 30px; }
+/* Klemmender Kanal zum Brain (KanalHinweis.tsx): dieselbe Form, aber gelb —
+   nichts ist verloren, es wartet nur. */
+.rj-kanal { border-left-color: var(--warn); background: var(--warn-soft, rgba(232, 185, 72, 0.08)); }
+.rj-kanal .rj-punkt { background: var(--warn); }
+.rj-kanal .rj-ok { color: var(--text-4); }
+.rj-grund { margin: 0 0 6px; font-size: 12.5px; line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
+.rj-wo {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  text-wrap: pretty;
+}
+
+/* ── Freie Bloecke ───────────────────────────────────────────────────────────
+   Tabellarisch wie die Abo-Karte: Tag, Zeit und Dauer stehen untereinander in
+   festen Spalten, damit man die Bloecke vergleichen kann statt sie zu lesen. */
+.lk-liste { list-style: none; margin: 0; padding: 0; }
+.lk-row {
+  display: grid;
+  grid-template-columns: 5rem 7.5rem 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  min-height: 40px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-1);
+}
+.lk-liste li:last-child { border-bottom: 0; }
+.lk-row.fertig { opacity: 0.55; }
+.lk-tag { font-size: 14px; color: var(--text-2); }
+.lk-zeit {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.lk-dauer {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.lk-btn {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: none;
+  border: 1px solid var(--line-1);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.lk-btn:hover:not(:disabled) { color: var(--text-1); border-color: var(--accent); }
+.lk-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lk-btn:disabled { opacity: 0.5; cursor: default; }
+.lk-fertig {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.lk-leer, .lk-fuss { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-4); text-wrap: pretty; }
+.lk-fuss { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line-1); }
+.lk-fehler { margin: 12px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--crit); text-wrap: pretty; }
+
+@media (max-width: 560px) {
+  .lk-row { grid-template-columns: 4.5rem 1fr auto; }
+  .lk-dauer { display: none; }
+}
+
+/* ── Vorlauf-Frage ───────────────────────────────────────────────────────────
+   Eine einzelne Entscheidung, keine Maske. Deshalb grosse Klickflaechen, eine
+   Vorauswahl (Hermes' Vorschlag) und ein Satz, der sagt, was die Wahl bewirkt —
+   wer nicht sieht, was passiert, waehlt beliebig. */
+.vl-titel { margin: 0 0 4px; font-size: 15px; font-weight: 500; color: var(--text-1); text-wrap: pretty; }
+.vl-datum, .vl-warum {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.vl-warum { text-transform: none; letter-spacing: 0; font-family: inherit; font-size: 12.5px; line-height: 1.5; }
+.vl-wahl { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 12px; }
+.vl-btn {
+  font-size: 13px;
+  color: var(--text-3);
+  background: none;
+  border: 1px solid var(--line-1);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease), background 160ms var(--ease);
+}
+.vl-btn:hover:not(:disabled) { color: var(--text-1); border-color: var(--accent); }
+.vl-btn.sel { color: var(--text-1); border-color: var(--accent); background: var(--accent-soft); }
+.vl-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vl-folge { margin: 0 0 14px; font-size: 12.5px; line-height: 1.5; color: var(--text-3); text-wrap: pretty; }
+.vl-folge b { color: var(--text-1); font-weight: 600; }
+.vl-fehler { margin: 0 0 12px; font-size: 12.5px; color: var(--crit); }
+.vl-aktionen { display: flex; gap: 10px; align-items: center; }
+.vl-ok {
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-1, #10131a);
+  background: var(--accent);
+  border: 0; border-radius: 999px;
+  padding: 8px 18px; cursor: pointer;
+  transition: opacity 160ms var(--ease);
+}
+.vl-ok:hover:not(:disabled) { opacity: 0.88; }
+.vl-ok:disabled, .vl-weg:disabled { opacity: 0.5; cursor: default; }
+.vl-weg {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  background: none; border: 0; cursor: pointer;
+  transition: color 160ms var(--ease);
+}
+.vl-weg:hover:not(:disabled) { color: var(--text-2); }
+
+/* ── Verdraengter Termin ─────────────────────────────────────────────────────
+   Quittung, keine Warnung: ein Lernblock ueber einer Vorlesung heisst, dass
+   Paul nicht hingeht — das ist seine Entscheidung, nicht ein Fehler. Deshalb
+   ruhig gesetzt und mit dem Weg zurueck im selben Satz. */
+.vd-hinweis {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line-1);
+  border-left: 2px solid var(--accent);
+  background: var(--accent-soft);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.vd-zurueck { color: var(--text-4); }
+
+/* ── Morgendialog: gehst du heute hin? ───────────────────────────────────────
+   Kein Modal. Ein Modal zwingt zu einer Antwort, bevor man den Tag gesehen hat
+   — und wer unter Zwang antwortet, klickt. Der Block steht oben im Fluss, ist
+   nicht zu uebersehen und laesst sich vertagen.
+   Kollidierende Termine tragen eine Kante in Ton: sie sind der Grund, warum
+   ueberhaupt gefragt wird. */
+.tt {
+  border: 1px solid var(--line-1);
+  border-left: 2px solid var(--accent);
+  border-radius: 14px;
+  background: var(--accent-soft);
+  padding: 14px 16px;
+}
+.tt-kopf { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.tt-titel { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-1); }
+.tt-zahl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+.tt-liste { list-style: none; margin: 0; padding: 0; }
+.tt-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-1);
+}
+.tt-liste li:last-child { border-bottom: 0; }
+.tt-row.kollision { padding-left: 10px; border-left: 2px solid var(--crit); margin-left: -12px; }
+.tt-zeit {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.tt-name { font-size: 14px; color: var(--text-2); text-wrap: pretty; overflow-wrap: anywhere; }
+.tt-warn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--crit);
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.tt-knoepfe { display: flex; gap: 8px; }
+.tt-ja, .tt-nein {
+  font-size: 12.5px;
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease), background 160ms var(--ease);
+}
+.tt-ja { color: var(--ink-1, #10131a); background: var(--accent); border: 0; font-weight: 500; }
+.tt-ja:hover { opacity: 0.88; }
+.tt-nein { color: var(--text-3); background: none; border: 1px solid var(--line-1); }
+.tt-nein:hover { color: var(--text-1); border-color: var(--crit); }
+.tt-ja:focus-visible, .tt-nein:focus-visible, .tt-spaeter:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.tt-fuss {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-1);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  text-wrap: pretty;
+}
+.tt-spaeter {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--text-4);
+  background: none; border: 0; cursor: pointer;
+  white-space: nowrap;
+  transition: color 160ms var(--ease);
+}
+.tt-spaeter:hover { color: var(--text-2); }
+
+@media (max-width: 560px) {
+  .tt-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .tt-zeit { grid-column: 1; }
+  .tt-name { grid-column: 1; }
+  .tt-knoepfe { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+/* ── Deine Aufgaben: Heute und Diese Woche in einer Karte (2026-10-31) ──────
+   Zwei Spalten derselben Frage, getrennt durch eine Linie statt durch zwei
+   Kartenränder. Die Tagesliste wächst auf die Höhe der Wochenspalte (siehe
+   .card-heute oben) — dieselbe Regel wie vorher neben dem Horizont. */
+.aurora .aufgaben-spalten { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(18px, 2.4vw, 34px); align-items: stretch; }
+.aurora .aufg-spalte { min-width: 0; position: relative; }
+.aurora .aufg-spalte + .aufg-spalte { border-left: 1px solid var(--line-1); padding-left: clamp(18px, 2.4vw, 34px); }
+.aurora .aufg-spalte .card-head { margin-bottom: 12px; }
+.aurora .aufg-spalte.drag-over { outline: 1.5px dashed var(--accent); outline-offset: 6px; border-radius: 12px; }
+@media (max-width: 900px) {
+  .aurora .aufgaben-spalten { grid-template-columns: 1fr; }
+  .aurora .aufg-spalte + .aufg-spalte { border-left: 0; padding-left: 0; border-top: 1px solid var(--line-1); padding-top: 18px; }
+}
+
+/* Empfehlungen — oben in der Karte, eine Zeile pro Vorschlag. Leise, bis man
+   hinsieht: sie sollen beraten, nicht drängeln. */
+.aurora .empf { margin: -6px 0 20px; display: flex; flex-direction: column; gap: 10px; }
+.aurora .empf-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.aurora .empf-liste li {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 8px 8px 8px 14px; border-radius: 14px;
+  background: color-mix(in oklab, var(--accent) 7%, transparent); border: 1px solid color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.aurora .empf-liste li.empf-streichen { background: color-mix(in oklab, var(--crit) 6%, transparent); border-color: color-mix(in oklab, var(--crit) 22%, transparent); }
+.aurora .empf-liste li.empf-woche { background: color-mix(in oklab, var(--warn) 6%, transparent); border-color: color-mix(in oklab, var(--warn) 22%, transparent); }
+.aurora .empf-art { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.aurora .empf-streichen .empf-art { color: var(--crit); }
+.aurora .empf-woche .empf-art { color: var(--warn); }
+.aurora .empf-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.aurora .empf-text b { font-weight: 500; font-size: 14px; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aurora .empf-grund { font-size: 12px; color: var(--text-3); }
+.aurora .empf-knoepfe { display: flex; gap: 6px; }
+.aurora .empf-knoepfe button { min-height: 32px; padding: 0 12px; border-radius: 999px; font-size: 12px; transition: all 160ms var(--ease); }
+.aurora .empf-knoepfe .ja { background: var(--accent); color: #0A0C12; font-weight: 500; }
+.aurora .empf-streichen .empf-knoepfe .ja { background: var(--crit); }
+.aurora .empf-woche .empf-knoepfe .ja { background: var(--warn); }
+.aurora .empf-knoepfe .nein { color: var(--text-3); border: 1px solid var(--line-2); }
+.aurora .empf-knoepfe .nein:hover { color: var(--text-1); }
+.aurora .empf-leer { margin: 0; font-size: 13px; color: var(--text-4); }
+.aurora .empf-lernen { display: flex; flex-direction: column; gap: 6px; }
+.aurora .empf-link { align-self: flex-start; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4); padding: 6px 0; }
+.aurora .empf-link:hover { color: var(--text-2); }
+.aurora .empf-profil { font-size: 13px; color: var(--text-2); line-height: 1.5; padding-left: 12px; border-left: 1.5px solid var(--line-2); display: flex; flex-direction: column; gap: 4px; }
+.aurora .empf-profil p { margin: 0; }
+.aurora .empf-profil .plus { color: var(--ok); }
+.aurora .empf-profil .minus { color: var(--warn); }
+@media (max-width: 640px) {
+  .aurora .empf-liste li { grid-template-columns: minmax(0, 1fr) auto; }
+  .aurora .empf-art { grid-column: 1 / -1; }
+}
+
+/* Prioritätspunkt an der Tageszeile — links vom ◎ und ✕, gleiche Machart.
+   Ein bisschen sichtbar auch ohne Hover, damit man weiss, dass er da ist. */
+.aurora .focus-prio {
+  position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--ink-2, #11141B); border: 0; cursor: pointer; opacity: 0; transition: opacity 160ms var(--ease);
+}
+.aurora .focus-prio span { width: 9px; height: 9px; border-radius: 50%; background: var(--text-4); box-shadow: 0 0 0 3px rgba(255,255,255,0.05); }
+.aurora .focus-prio.warn span { background: var(--warn); }
+.aurora .focus-prio.crit span { background: var(--crit); }
+.aurora .focus-row-wrap:hover .focus-prio, .aurora .focus-prio:focus-visible { opacity: 1; }
+.aurora .focus-prio:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+.aurora .focus-empf { color: var(--accent); }
+.aurora .week-empf { font-size: 11.5px; color: var(--accent); }
+.aurora .week-row.empf-streichen .week-empf { color: var(--crit); }
+.aurora .push-btn.empfohlen { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: var(--accent-soft); }
+@media (hover: none) { .aurora .focus-prio { opacity: 0.8; } }
+
+/* Lernen heute (components/LernTempoZeile.tsx) — eine Zeile unter den
+   Empfehlungen, aufklappbar. Das Urteil trägt die einzige Farbe. */
+.aurora .lerntempo { margin: -8px 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.aurora .lerntempo .lt-passt { color: var(--ok); }
+.aurora .lerntempo .lt-knapp { color: var(--warn); }
+.aurora .lerntempo .lt-zu-viel { color: var(--crit); }

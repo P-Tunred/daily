@@ -1,0 +1,315 @@
+/* Stil „G" — die ganze App im Aufbau von Seite G (Design-Canvas „Glas-Vexto").
+ *
+ * Pauls Entscheidung (2026-11-01): „ich will, dass es so aussieht wie in G —
+ * einfach nur als Setting für G". Ein eigener Stil in den Einstellungen
+ * (lib/stil.ts), unabhängig von der Startseite. Wer „Original" wählt, sieht die
+ * App unverändert. Jede Regel hier hängt an html[data-stil="g"] (App.tsx) —
+ * auf <html>, damit auch Dialoge in Portalen sie sehen. Die neu gebauten
+ * G-Karten (components/g/) bringen ihr eigenes CSS mit (components/g/g.css).
+ *
+ * Diese Datei ist die Glas-Ebene für alles, was (noch) die alten Komponenten
+ * benutzt:
+ *   · Glasflächen wie „Heute": Glas des Themas, Haarlinie, 28 px Radius.
+ *   · Eine Schrift, dünn. Keine Mono-Versalien, keine Serifen-Titel.
+ *   · Labels in Satzschreibung, Kartentitel hell und ruhig.
+ *   · Oben auf den Unterseiten kein Satz und kein Titel.
+ *   · Alle Farben kommen weiter aus dem Thema — die Ebene läuft in jedem.
+ *
+ * backdrop-filter NIE zusätzlich mit -webkit- schreiben: steht beides da, lässt
+ * der Build (Lightning CSS) die unpräfixierte Fassung fallen, und Chromium/
+ * Electron zeichnet dann gar nicht weich. Das Präfix ergänzt der Build selbst.
+ */
+
+/* ── Schrift: eine Stimme ───────────────────────────────────────────────── */
+html[data-stil="g"] {
+  --font-display: var(--font-sans);
+  --font-serif: var(--font-sans);
+  --font-mono: var(--font-sans);
+  --fs-label: 13px;
+  --tr-label: 0;
+  --radius-card: 28px;
+}
+html[data-stil="g"] h1 { font-weight: 300; letter-spacing: -0.03em; }
+html[data-stil="g"] h2,
+html[data-stil="g"] h3 { font-weight: 400; font-feature-settings: normal; }
+
+/* Labels in Satzschreibung. Die Liste sind alle Klassen, die sonst Versalien
+ * erzwingen (index.css, aurora.css, setzling.css, Komponenten-CSS). Die
+ * Kartentitel und Lernzeit-Abschnitte stehen weiter unten eigens. */
+html[data-stil="g"] :is(
+  .hud-label, .label-meta, .t-label, .settings-label,
+  .lernzeit-page .flat-meta,
+  .aurora .anchor .date, .aurora .hero .kicker, .aurora .hero .essential .label,
+  .aurora .focus-row .when,
+  .aurora .effort-row .effort-label, .aurora .week-group-head, .aurora .push-btn,
+  .aurora .week-save, .aurora .week-cancel, .aurora .week-meta, .aurora .week-spaeter > summary,
+  .aurora .deadline .name .sub, .aurora .countdown .u, .aurora .card-head .head-add,
+  .aurora .ring-caption, .aurora .au-ring .lbl, .aurora .stat .k,
+  .aurora .conv-head .who, .aurora .conv-head .ts, .aurora .knows-toggle, .aurora .hero .speak-btn,
+  .aurora .jset, .aurora .empf-art, .aurora .empf-link,
+  .triage-kicker, .triage-src, .triage-subhead, .briefing-strip-label, .briefing-strip-meta,
+  .hz-when-label, .hz-tag, .hz-all, .hz-weg, .hz-sync, .fokus-btn,
+  .abo-summe-label, .abo-plan, .abo-anbieter, .abo-reset, .abo-detail, .abo-notiz .bis,
+  .rj-mehr, .rj-wo, .lk-dauer, .lk-btn, .lk-fertig, .vl-datum, .vl-warum, .vl-weg,
+  .tt-zahl, .tt-warn, .tt-spaeter,
+  .szl-daystatus .lbl, .szl-greet .kicker, .szl-quelle, .szl-greet .essential .label,
+  .szl-today .kicker, .szl-scrollcue, .szl-greet .nib summary,
+  .hb-knopf, .hs-knopf, .hs-ende, .gestern-datum, .gestern h3, .gestern-ok
+) {
+  font-family: var(--font-sans);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+  font-weight: 400;
+}
+/* Dasselbe für Versalien aus Tailwind-Klassen und Inline-Stilen. */
+html[data-stil="g"] :is(.uppercase, [style*="text-transform: uppercase"]) {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+html[data-stil="g"] :is(.tracking-wide, .tracking-wider, .tracking-widest) { letter-spacing: 0 !important; }
+/* Was als 9–11 px-Versal gedacht war, ist in Satzschreibung zu klein. */
+html[data-stil="g"] .uppercase:is(.text-\[9px\], .text-\[9\.5px\], .text-\[10px\], .text-\[10\.5px\], .text-\[11px\]),
+html[data-stil="g"] [style*="text-transform: uppercase"]:is([style*="font-size: 9"], [style*="font-size: 10"], [style*="font-size: 11px"]) {
+  font-size: 12px !important;
+}
+/* Die Verbrauchslinien am Rand bleiben klein. */
+html[data-stil="g"] .usage-label { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-size: 11px; }
+
+/* ── Flächen: Glas wie „Heute" ──────────────────────────────────────────── */
+html[data-stil="g"] :is(.glass, .glass-dark, .aurora .card) {
+  background: var(--glass-bg);
+  border: 1px solid var(--line-1);
+  border-radius: 28px;
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 40px 80px -48px rgba(0, 0, 0, 0.55);
+}
+
+/* Über einem hellen Foto oder Schreibtisch saufen kleine Labels in --text-3
+ * ab (im Glas-Thema sind die Stufen Alpha-Werte). In den Flächen rückt deshalb
+ * jede Stufe eins nach oben — wie auf der Startseite, die für kleine Schrift
+ * nie --text-3 nimmt. Und in den dunklen Themen bekommt das Glas einen Hauch
+ * mehr Grund, damit dichte Karten lesbar bleiben; die Papier-Themen nicht. */
+html[data-stil="g"] :is(.glass, .glass-dark, .aurora .card, .lernzeit-page .flat-section:not(.flat-hero), .triage-modal, .glass-strong, dialog.gestern, .tt) {
+  --text-3: var(--text-2);
+  --text-4: color-mix(in srgb, var(--text-2) 72%, transparent);
+}
+html[data-stil="g"]:not([data-theme="kupferstich"]):not([data-theme="arkadien"]) :is(.glass, .glass-dark, .aurora .card, .lernzeit-page .flat-section:not(.flat-hero)) {
+  background: linear-gradient(rgba(10, 12, 18, 0.22), rgba(10, 12, 18, 0.22)), var(--glass-bg);
+}
+
+/* Eingeblendete Karten (.reveal, index.css) behalten nach dem Einblenden
+ * `filter: blur(0)`. Schon ein Filter ohne Wirkung macht das Element zur
+ * Grenze für backdrop-filter — die Karte darin sieht dann das Foto nicht und
+ * zeichnet nichts weich, Text steht auf fast klarem Bild. Am Ende also gar
+ * kein Filter. Nur hier, damit das Original unverändert bleibt. */
+html[data-stil="g"] .reveal.in { filter: none; }
+
+/* Kartenkopf (Card.tsx): Titel hell und ruhig, Zahl daneben leise. */
+html[data-stil="g"] .card-title {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  color: var(--text-1);
+}
+html[data-stil="g"] .card-meta {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+/* ── Morgens, weiter unten ──────────────────────────────────────────────── */
+/* Die Aufgaben- und Horizont-Karten (aurora.css) bekommen denselben Kopf. */
+html[data-stil="g"] .aurora .card-head .ttl {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  color: var(--text-1);
+}
+html[data-stil="g"] .aurora .card-head .right { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text-2); }
+/* Die Spaltenköpfe in „Deine Aufgaben" (Was heute zählt, Diese Woche) bleiben leiser. */
+html[data-stil="g"] .aurora .aufg-spalte .card-head .ttl { font-size: 13px; color: var(--text-2); }
+/* „Ein bisschen Zeit für dich." — der Satz oben fällt weg, der Kartentitel reicht. */
+html[data-stil="g"] .bewusst-intro { display: none; }
+
+/* ── Lernzeit ───────────────────────────────────────────────────────────── */
+/* Kein Titel oben: Tagesstand links, Bereiche rechts. */
+html[data-stil="g"] .lz-titel { display: none; }
+html[data-stil="g"] .lz-tabs {
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-1);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+html[data-stil="g"] .lz-tabs button {
+  min-height: 36px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--text-2);
+}
+html[data-stil="g"] .lz-tabs button:hover { color: var(--text-1); }
+html[data-stil="g"] .lz-tabs button.an {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: var(--text-1) !important;
+  border-color: transparent !important;
+}
+
+/* Die Abschnitte werden Glasblätter statt Haarlinien; der erste („Heute")
+ * steht wie auf der Startseite frei auf dem Grund. */
+html[data-stil="g"] .lernzeit-page .flat-section {
+  padding: 24px 28px;
+  border: 1px solid var(--line-1);
+  border-radius: 28px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 40px 80px -48px rgba(0, 0, 0, 0.55);
+}
+html[data-stil="g"] .lernzeit-page .flat-section.flat-hero {
+  padding: 8px 4px 0;
+  border: 0;
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+html[data-stil="g"] .lernzeit-page .flat-kicker {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  color: var(--text-1);
+}
+html[data-stil="g"] .lernzeit-page .flat-kicker::before { content: none; }
+/* Der Satz oben im Dashboard und im Score fällt weg — die Zahlen sagen es. */
+html[data-stil="g"] .lernzeit-page .lern-statement { display: none; }
+
+/* Grund wie auf der Startseite: das Foto bzw. der Schreibtisch des Themas,
+ * kein grüner Lernzeit-Grund und kein Fortschritts-Schimmer. Die Papier-
+ * Themen (Kupferstich, Arkadien) behalten ihre eigene Lernzeit-Platte. */
+html[data-stil="g"] .lernzeit-progress-bg { display: none; }
+html[data-stil="g"] [data-view="lernzeit"] .veil { opacity: 1; }
+html[data-stil="g"] [data-view="lernzeit"]:is([data-theme="setzling"], :not([data-theme])) .stage {
+  background: #070b08 url("/setzling/bg.png") center 46% / cover no-repeat;
+}
+html[data-stil="g"] [data-theme="abendrot"][data-view="lernzeit"] .stage {
+  background: #0e0b0d url("/setzling/abendrot.png") center 40% / cover no-repeat;
+}
+html[data-stil="g"] [data-theme="nachtblau"][data-view="lernzeit"] .stage {
+  background: #060a14 url("/setzling/nachtblau.jpg") center 40% / cover no-repeat;
+}
+html[data-stil="g"] [data-theme="glas"][data-view="lernzeit"] .stage { background: transparent; }
+
+/* ── Dialoge: Glas über der Startseite ──────────────────────────────────── */
+html[data-stil="g"] :is(.triage-modal, .glass-strong.rounded-card, dialog.gestern, .tt) {
+  border-radius: 30px;
+  border: 1px solid var(--line-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 50px 120px -40px rgba(0, 0, 0, 0.8);
+}
+html[data-stil="g"] .triage-overlay,
+html[data-stil="g"] dialog.gestern::backdrop {
+  backdrop-filter: blur(8px);
+}
+
+/* ── Timer: unten rechts, schwebend (Seite G) ───────────────────────────── */
+html[data-stil="g"] .timer-schwebend {
+  position: fixed; right: 40px; bottom: 32px; z-index: 30; width: min(520px, calc(100vw - 32px));
+  padding: 8px; border-radius: 26px;
+  background: rgba(22, 24, 34, 0.66); border: 1px solid var(--line-2);
+  backdrop-filter: blur(60px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+}
+html[data-stil="g"] .timer-schwebend > div { border-radius: 20px; }
+html[data-stil="g"] .timer-im-kopf { display: none; }
+@media (max-width: 760px) {
+  html[data-stil="g"] .timer-schwebend { right: 16px; bottom: 16px; }
+}
+
+/* Eingeblendete Karten erscheinen im Stil G sofort: eine Karte, die erst beim
+   Hinsehen auftaucht, steht bis dahin als leere Fläche zwischen den anderen. */
+html[data-stil="g"] .reveal, html[data-stil="g"] .reveal.in { opacity: 1; transform: none; filter: none; transition: none; }
+
+/* Karten mit aurora-Klassen außerhalb von .aurora (z. B. „API Usage") hatten
+   gar keinen Rahmen und standen als nackter Text auf dem Foto. Im Stil G
+   bekommen sie dasselbe Glasblatt wie alle anderen. */
+html[data-stil="g"] .card:not(.aurora .card) {
+  position: relative; padding: 24px 24px; border-radius: 28px;
+  border: 1px solid var(--line-1);
+  background: linear-gradient(rgba(10, 12, 18, 0.22), rgba(10, 12, 18, 0.22)), var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 40px 80px -48px rgba(0, 0, 0, 0.55);
+  --text-3: var(--text-2);
+}
+html[data-stil="g"] .card:not(.aurora .card) .card-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+html[data-stil="g"] .card:not(.aurora .card) .card-head .ttl { font-size: 15px; font-weight: 400; color: var(--text-1); }
+html[data-stil="g"] .card:not(.aurora .card) .card-head .right { font-size: 13px; color: var(--text-2); }
+html[data-stil="g"] .card:not(.aurora .card) .empty-row { font-size: 13px; color: var(--text-2); }
+
+/* Zeitfelder in schmalen Spalten: die Uhrzeit darf nicht abgeschnitten werden. */
+html[data-stil="g"] .lernzeit-page input[type="time"] { min-width: 0; padding-inline: 8px; font-size: 13px !important; }
+
+/* ── Wochenplan und Stundenplan im Stil G (unslop, 2026-11-05) ───────────────
+ * Die alten Komponenten nehmen --color-accent; das Glas-Thema setzt es nie, so
+ * stand dort das Setzling-Grün. Im Stil G ist es der Akzent des Themas.
+ * WeekPlanCard/WeeklyTimeline lesen ihre Farben aus --wp-*-Variablen mit dem
+ * alten Wert als Rückfall — gesetzt werden sie nur hier, das Original bleibt.
+ * Heute ist eine Flächenstufe, kein Farbschimmer; Fortschritt in Weißstufen;
+ * kein Leuchten; Fachfarben der Blöcke bleiben, sie unterscheiden Fächer. */
+html[data-stil="g"] {
+  --color-accent: var(--accent);
+}
+/* Auf <html>, weil die Auswahl „Neuer Block" als Portal außerhalb von .wp liegt. */
+html[data-stil="g"] {
+  --wp-heute-grund: rgba(255, 255, 255, 0.08);
+  --wp-heute-rand: var(--line-2);
+  --wp-heute-text: var(--text-1);
+  --wp-tag-grund: rgba(255, 255, 255, 0.03);
+  --wp-erreicht: var(--text-1);
+  --wp-teil: rgba(255, 255, 255, 0.45);
+  --wp-geplant: rgba(255, 255, 255, 0.18);
+  --wp-gut: var(--text-1);
+  --wp-schein: none;
+  --wp-heute-kopf: rgba(255, 255, 255, 0.06);
+  --wp-heute-spalte: rgba(255, 255, 255, 0.025);
+  --wp-knopf-grund: rgba(255, 255, 255, 0.06);
+  --wp-knopf-text: var(--text-1);
+  --wp-knopf-rand: rgba(255, 255, 255, 0.08);
+}
+/* Schrift: nichts unter 11 px, Gewicht höchstens 500. Die Größen stehen als
+ * Tailwind-Klassen und Inline-Stile im Code, daher hier mit !important. */
+html[data-stil="g"] .wp :is(.text-\[9px\], .text-\[10px\]) { font-size: 12px !important; }
+html[data-stil="g"] .wp .text-\[11px\] { font-size: 12px !important; }
+html[data-stil="g"] .wp [style*="font-size: 9px"],
+html[data-stil="g"] .wp [style*="font-size: 10px"] { font-size: 11px !important; }
+html[data-stil="g"] .wp :is(.font-semibold, .font-bold) { font-weight: 500 !important; }
+html[data-stil="g"] .wp [style*="font-weight: 600"] { font-weight: 500 !important; }
+html[data-stil="g"] .wp .italic { font-style: normal; }
+/* Emoji vor Kategorien und der Funke vor Hermes-Vorschlägen fallen weg:
+ * die Farbe des Blocks und der gestrichelte Rand sagen es schon. */
+.wp-nur-g { display: none; }
+html[data-stil="g"] .wp-zeichen { display: none; }
+html[data-stil="g"] .wp-nur-g { display: inline-block; }
+
+/* ── „Gehst du heute hin?" als Glasblatt ─────────────────────────────────── */
+html[data-stil="g"] .tt {
+  padding: 20px 24px;
+  border: 1px solid var(--line-1);
+  background: linear-gradient(rgba(10, 12, 18, 0.22), rgba(10, 12, 18, 0.22)), var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+html[data-stil="g"] .tt-titel { font-weight: 400; }
+html[data-stil="g"] .tt-row { padding: 8px 0; }
+html[data-stil="g"] .tt-row.kollision { padding-left: 12px; margin-left: -12px; }
+html[data-stil="g"] .tt-zeit { font-size: 13px; color: var(--text-2); }
+html[data-stil="g"] .tt-name { font-size: 15px; color: var(--text-1); }
+html[data-stil="g"] .tt-ja, html[data-stil="g"] .tt-nein { min-height: 32px; padding: 0 12px; font-size: 13px; }
+html[data-stil="g"] .tt-ja { background: var(--text-1); color: #12141C; }
+html[data-stil="g"] .tt-nein { color: var(--text-2); background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.08); }
+html[data-stil="g"] .tt-nein:hover { color: var(--text-1); border-color: var(--line-2); }
+html[data-stil="g"] .tt-fuss { margin-top: 12px; padding-top: 12px; font-size: 13px; color: var(--text-2); }
+html[data-stil="g"] :is(.tt-zahl, .tt-spaeter) { font-size: 13px; color: var(--text-2); }

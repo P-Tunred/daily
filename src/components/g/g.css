@@ -1,0 +1,423 @@
+/* Stil „G" — die neu gebauten Karten (components/g/). Gezeigt werden sie nur im
+ * Stil G, die Klassen tragen deshalb keinen eigenen Schalter. Aufbau und Maße
+ * aus Seite G im Design-Canvas; die Farben kommen aus dem Thema.
+ *
+ * backdrop-filter nur unpräfixiert schreiben (siehe g-stil.css). */
+
+.g-raster { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.g-span-7 { grid-column: span 7; }
+.g-span-5 { grid-column: span 5; }
+.g-span-8 { grid-column: span 8; }
+.g-span-4 { grid-column: span 4; }
+.g-span-12 { grid-column: 1 / -1; }
+.g-spalte { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+@media (max-width: 960px) {
+  .g-span-7, .g-span-5, .g-span-8, .g-span-4 { grid-column: 1 / -1; }
+}
+
+/* Glasblatt wie „Heute" auf der Startseite */
+.g-blatt {
+  --text-3: var(--text-2);
+  position: relative; min-width: 0; padding: 24px 24px;
+  border-radius: 28px; border: 1px solid var(--line-1);
+  background: linear-gradient(rgba(10, 12, 18, 0.22), rgba(10, 12, 18, 0.22)), var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 40px 80px -48px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-sans); font-weight: 400; color: var(--text-1);
+}
+.g-blatt.g-vorn { background: linear-gradient(rgba(10, 12, 18, 0.32), rgba(10, 12, 18, 0.32)), var(--glass-bg); }
+[data-theme="kupferstich"] .g-blatt, [data-theme="arkadien"] .g-blatt { background: var(--glass-bg); }
+.g-blatt h2, .g-blatt h3 { font-family: var(--font-sans); font-feature-settings: normal; }
+
+.g-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.g-kopf h2 { margin: 0; font-size: 15px; font-weight: 400; letter-spacing: 0; line-height: 1.3; color: var(--text-1); }
+.g-kopf p { margin: 2px 0 0; font-size: 13px; color: var(--text-2); }
+.g-leise { font-size: 13px; color: var(--text-2); }
+.g-unterkopf { margin: 20px 0 2px; font-size: 13px; color: var(--text-2); }
+.g-notiz { margin: 12px 0 0; font-size: 13px; color: var(--text-2); }
+.g-frei { margin: 16px 0 8px; font-size: 20px; font-weight: 400; letter-spacing: 0; color: var(--text-1); }
+.g-frei span { color: var(--text-2); }
+
+/* Funke */
+.g-funke { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* Pillen und runde Knöpfe — mit .g-blatt davor, sonst setzt `.aurora button`
+   (aurora.css) Grund und Rand zurück. Ziffern nie mit tabular-nums in Fließtext:
+   die Schrift macht dann auch Komma und Punkt breit. */
+.g-blatt .g-pille {
+  min-height: 36px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-size: 13px; font-weight: 400; color: var(--text-1); cursor: pointer;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
+}
+.g-blatt .g-pille:hover { background: rgba(255, 255, 255, 0.11); }
+.g-blatt .g-pille.an { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.14); }
+.g-blatt .g-pille.hell { background: var(--text-1); color: #12141C; border-color: transparent; font-weight: 500; }
+.g-blatt .g-pille.klein { min-height: 32px; padding: 0 12px; font-size: 13px; }
+.g-blatt .g-pille.still { cursor: default; min-height: 32px; font-size: 13px; }
+.g-blatt .g-pille.still:hover { background: rgba(255, 255, 255, 0.06); }
+.g-blatt .g-pille:focus-visible, .g-blatt .g-rund:focus-visible, .g-blatt .g-icon:focus-visible, .g-tabs button:focus-visible, .g-blatt .g-prio:focus-visible, .g-aufgabe:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.g-pillen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.g-aufwand { margin-top: 12px; padding-left: 20px; }
+.g-aufwand .g-leise { margin-right: 8px; }
+
+.g-blatt .g-rund {
+  width: 40px; height: 40px; border-radius: 50%; flex: none; display: grid; place-items: center; cursor: pointer;
+  background: var(--text-1); color: #12141C; border: 0; transition: transform 160ms var(--ease);
+}
+.g-blatt .g-rund:active:not(:disabled) { transform: scale(0.97); }
+.g-blatt .g-rund.geist { background: rgba(255, 255, 255, 0.08); color: var(--text-2); }
+.g-blatt .g-rund svg { width: 14px; height: 14px; }
+.g-blatt .g-icon {
+  width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: none; border: 0; color: var(--text-2); opacity: 0.55; transition: opacity 160ms var(--ease), color 160ms var(--ease);
+}
+.g-zeile:hover .g-icon, .g-blatt .g-icon:focus-visible { opacity: 1; }
+.g-blatt .g-icon:hover { color: var(--text-1); }
+.g-blatt .g-icon svg { width: 16px; height: 16px; }
+
+/* Segmente in einer Pille */
+.g-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); }
+.g-tabs button { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 0; background: none; font: inherit; font-size: 13px; color: var(--text-2); cursor: pointer; }
+.g-tabs button:hover { color: var(--text-1); }
+.g-tabs button.an { background: rgba(255, 255, 255, 0.15); color: var(--text-1); }
+
+/* Eingabe als Pille */
+.g-eingabe {
+  margin-top: 20px; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 8px 0 20px;
+  border-radius: 999px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.g-eingabe:focus-within { border-color: var(--line-2); }
+.g-eingabe input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--text-1); font: inherit; font-size: 15px; }
+.g-eingabe input::placeholder { color: var(--text-2); }
+.g-eingabe.klein { min-height: 48px; margin-top: 12px; }
+.g-eingabe.klein .g-rund { width: 34px; height: 34px; }
+
+/* Zeilen */
+.g-liste { list-style: none; margin: 4px 0 0; padding: 0; }
+.g-liste > li + li { border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.g-zeile { display: flex; align-items: center; gap: 8px; min-height: 52px; }
+.g-aufgabe {
+  flex: 1; min-width: 0; min-height: 52px; display: flex; align-items: center; gap: 16px; text-align: left;
+  background: none; border: 0; padding: 8px 0; font: inherit; color: var(--text-1); cursor: pointer; border-radius: 12px;
+  transition: background-color 160ms var(--ease);
+}
+div.g-aufgabe { cursor: default; }
+button.g-aufgabe:hover { background-color: rgba(255, 255, 255, 0.03); }
+.g-haken {
+  width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1px solid var(--kat, var(--line-2));
+  display: grid; place-items: center; color: #12141C;
+}
+.g-haken svg { width: 9px; height: 9px; opacity: 0; }
+.g-aufgabe.erledigt .g-haken { background: var(--text-1); border-color: var(--text-1); }
+.g-aufgabe.erledigt .g-haken svg { opacity: 1; }
+.g-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.g-text > span { font-size: 15px; font-weight: 400; line-height: 1.35; }
+.g-text small { font-size: 12px; color: var(--text-2); }
+.g-aufgabe.erledigt .g-text > span { color: var(--text-2); text-decoration: line-through; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; }
+.g-jetzt { position: relative; }
+.g-jetzt::before { content: ""; position: absolute; left: -24px; top: 14px; bottom: 14px; width: 2px; border-radius: 2px; background: var(--accent); }
+.g-jetzt.erledigt::before { display: none; }
+.g-alt { flex: none; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--crit); }
+.g-wann { width: 92px; flex: none; font-size: 13px; color: var(--text-2); }
+
+/* Priorität: drei Punkte, so viele hell wie dringend */
+.g-blatt .g-prio { flex: none; display: inline-flex; gap: 4px; align-items: center; height: 36px; padding: 0 8px; border: 0; background: none; cursor: pointer; border-radius: 999px; }
+.g-blatt .g-prio i { width: 4px; height: 4px; border-radius: 50%; background: var(--line-2); }
+.g-blatt .g-prio i.an { background: var(--text-2); }
+.g-blatt .g-prio:hover i.an { background: var(--text-1); }
+
+/* Fortschritt: weiße Linie, der Kopf ist der Funke */
+.g-linie { position: relative; display: block; height: 1px; margin-top: 8px; background: rgba(255, 255, 255, 0.14); }
+.g-linie i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--text-1); }
+.g-linie b { position: absolute; top: -2px; width: 5px; height: 5px; margin-left: -2.4px; border-radius: 50%; background: var(--accent); }
+
+/* Urteil: passt ●, Warnung ▲, kritisch ◆ */
+.g-urteil { flex: none; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+.g-ok { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.g-warn { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 9px solid var(--warn); }
+.g-krit { width: 7px; height: 7px; border-radius: 1px; background: var(--crit); transform: rotate(45deg); }
+
+/* Vorschläge (Empfehlungen) */
+.g-vorschlaege { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.g-vorschlaege li { display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 16px; border-radius: 18px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); }
+.g-art { flex: none; width: 92px; font-size: 13px; color: var(--text-2); }
+.g-vorschlaege .g-text > span { font-size: 15px; }
+.g-knoepfe { display: flex; gap: 8px; flex: none; }
+
+/* Was du durchziehst, was du wegräumst */
+.g-reko { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.07); display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 16px; align-items: center; }
+.g-reko dt { font-size: 13px; color: var(--text-2); }
+.g-reko dd { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Tage in Reihe: Woche (7) und Horizont (14) */
+.g-woche, .g-leiste { margin-top: 16px; display: grid; gap: 4px; }
+.g-woche { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.g-leiste { grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 2px; }
+.g-tag { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0 12px; border-radius: 16px; font-size: 12px; color: var(--text-2); }
+.g-leiste .g-tag { padding: 8px 0 12px; font-size: 11px; gap: 8px; }
+.g-tag b { font-size: 18px; font-weight: 400; color: var(--text-1); font-variant-numeric: tabular-nums; }
+.g-leiste .g-tag b { font-size: 15px; }
+.g-tag.vorbei b { color: var(--text-2); }
+.g-tag.heute { background: rgba(255, 255, 255, 0.08); }
+.g-tag.heute b::after { content: ""; display: block; width: 4px; height: 4px; margin: 4px auto 0; border-radius: 50%; background: var(--accent); }
+.g-punkte { display: inline-flex; gap: 4px; min-height: 8px; }
+.g-punkte i { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--line-2); }
+.g-punkte i.ja { background: var(--text-1); border-color: var(--text-1); }
+.g-punkte i.krit { width: 6px; height: 6px; border: 0; border-radius: 1px; background: var(--crit); transform: rotate(45deg); }
+
+
+@media (max-width: 760px) {
+  .g-blatt { padding: 20px 20px; border-radius: 24px; }
+  .g-eingabe { flex-wrap: wrap; padding: 8px 8px 8px 16px; border-radius: 24px; }
+  .g-eingabe input { flex-basis: 100%; min-height: 40px; }
+  .g-jetzt::before { left: -20px; }
+  .g-vorschlaege li { flex-wrap: wrap; }
+  .g-art { width: auto; }
+  .g-reko { grid-template-columns: minmax(0, 1fr); }
+  .g-leiste { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .g-wann { width: 70px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-blatt *, .g-raster * { transition: none !important; animation: none !important; }
+}
+
+/* ── Zeit für dich (GBewusst) ─────────────────────────────────────────── */
+.g-feld { margin: 0; padding: 0; border: 0; min-width: 0; }
+.g-bewusst > [role="status"], .g-bewusst > [role="alert"] { grid-column: 1 / -1; margin: 0; font-size: 13px; color: var(--text-2); }
+.g-punkte i.teil { border-color: var(--text-2); background: linear-gradient(90deg, var(--text-2) 50%, transparent 50%); }
+.g-punkte i.jetzt { border-color: var(--accent); }
+.g-punkte i.weiss { border-style: dotted; opacity: 0.6; }
+.g-bewusst .g-punkte { gap: 4px; }
+.g-hinweis { margin-top: 16px; padding: 16px 16px; border-radius: 18px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); }
+.g-hinweis p { margin: 0 0 12px; font-size: 13px; line-height: 1.5; color: var(--text-2); }
+.g-hinweis b { font-weight: 400; color: var(--text-1); }
+.g-gross { font-size: 15px; color: var(--text-2); }
+.g-gross b { font-weight: 400; color: var(--text-1); }
+.g-blatt .g-rund.klein { width: 36px; height: 36px; font-size: 18px; font-weight: 400; line-height: 1; }
+.g-blatt .g-rund:disabled { opacity: 0.4; cursor: default; transform: none; }
+.g-blatt a.g-pille { text-decoration: none; }
+
+/* Gespaltene Zahl: hell, was zählt — gedimmt der Rahmen */
+.g-zahl { margin: 0; display: flex; align-items: baseline; font-weight: 300; letter-spacing: -0.03em; line-height: 1; color: var(--text-1); }
+.g-zahl .leise { color: var(--text-3); }
+.g-zahl small { margin-left: 8px; font-size: 13px; letter-spacing: 0; color: var(--text-2); }
+.g-zahl.klein { font-size: 26px; font-weight: 400; letter-spacing: 0; }
+.g-zahl.mittel { font-size: 44px; letter-spacing: -0.02em; }
+.g-zahl.gross { font-size: 72px; }
+.g-zahl.riesig { font-size: clamp(72px, 8vw, 112px); }
+
+/* Der Tag als Lineal: Striche, Blöcke, das Jetzt als Funke */
+.g-lineal { position: relative; height: 48px; margin-top: 16px; }
+.g-lineal-striche { position: absolute; left: 0; right: 0; top: 18px; height: 12px; background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px 7px); }
+.g-lineal-frei, .g-lineal-block { position: absolute; top: 12px; height: 24px; border-radius: 6px; }
+.g-lineal-block { background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.18); }
+.g-lineal-frei { background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.7); }
+.g-lineal-jetzt { position: absolute; top: 4px; width: 1px; height: 40px; background: var(--accent); }
+.g-lineal-jetzt::after { content: ""; position: absolute; left: -2px; top: -4px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.g-lineal-enden { position: absolute; left: 0; right: 0; top: 34px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); }
+
+/* Auswahl, Ideen, Rückblick — die alten Teile im G-Blatt, ohne eigene Karte */
+.g-bw-mehr .bewusst-routines { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* ── Lernzeit (GLernzeit) ─────────────────────────────────────────────── */
+.g-held { padding: 8px 48px 0 4px; display: flex; flex-direction: column; color: var(--text-1); text-shadow: var(--shadow-text); }
+.g-held .g-kopf { align-items: center; }
+.g-label { margin: 0; font-family: var(--font-sans); font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-2); }
+.g-held .g-zahl.riesig { margin-top: 20px; }
+.g-linie.dick { margin-top: 24px; }
+.g-werte { margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.g-werte dt { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+.g-werte dd { margin: 8px 0 0; }
+.g-werte .g-notiz { margin-top: 8px; }
+.g-klausur { min-height: 76px; }
+.g-klausur .g-urteil { margin-top: 8px; }
+.g-trenner { padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+.g-notiz b { font-weight: 400; color: var(--text-1); }
+
+/* Säulen: weiß, wo das Ziel erreicht ist; gedimmt darunter; heute mit Funke */
+.g-balken { margin-top: 24px; height: 150px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; align-items: end; }
+.g-balken.acht { grid-template-columns: repeat(8, minmax(0, 1fr)); height: 130px; }
+.g-balken-tag { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 12px; }
+.g-balken-tag i { position: relative; width: 100%; max-width: 30px; border-radius: 9px 9px 4px 4px; background: rgba(255, 255, 255, 0.2); }
+.g-balken-tag.ziel i { background: var(--text-1); }
+.g-balken-tag.heute i { background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.22)); }
+.g-balken-tag.heute i::before { content: ""; position: absolute; left: 50%; top: -10px; width: 5px; height: 5px; margin-left: -2.4px; border-radius: 50%; background: var(--accent); }
+.g-balken-tag.leer i { background: none; border: 1px dashed var(--line-2); }
+.g-balken-tag span { font-size: 11px; color: var(--text-2); }
+.g-balken-rahmen { position: absolute; bottom: 26px; width: 100%; max-width: 30px; border: 1px dashed rgba(255, 255, 255, 0.22); border-bottom: 0; border-radius: 9px 9px 0 0; pointer-events: none; }
+
+/* Ein Jahr in Punkten */
+.g-jahr { margin-top: 20px; display: grid; grid-template-rows: repeat(7, 9px); grid-auto-flow: column; grid-auto-columns: 9px; gap: 4px; overflow-x: auto; }
+.g-jahr i, .g-legende i { width: 9px; height: 9px; border-radius: 2px; background: rgba(255, 255, 255, 0.07); }
+.g-jahr i.l1, .g-legende i.l1 { background: rgba(255, 255, 255, 0.2); }
+.g-jahr i.l2, .g-legende i.l2 { background: rgba(255, 255, 255, 0.38); }
+.g-jahr i.l3, .g-legende i.l3 { background: rgba(255, 255, 255, 0.62); }
+.g-jahr i.l4, .g-legende i.l4 { background: var(--text-1); }
+.g-jahr i.jetzt { background: var(--accent); }
+.g-jahr i.leer { background: transparent; }
+.g-legende { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-2); }
+
+@media (max-width: 760px) {
+  .g-held { padding-right: 4px; }
+  .g-werte { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+
+/* In der schmalen Spalte: der Horizont als zwei Wochen untereinander. */
+.g-span-5 .g-leiste { grid-template-columns: repeat(7, minmax(0, 1fr)); row-gap: 4px; }
+.g-span-5 .g-leiste .g-tag { font-size: 11px; }
+.g-span-5 .g-leiste .g-tag b { font-size: 15px; }
+.g-held { padding-bottom: 8px; }
+
+/* ── Priorität als Hauch Farbe (Paul 2026-11-03: „nur ganz wenig") ─────────
+ * Dringend warm-rot, wichtig ocker, normal ohne. Ein Schimmer von links, der
+ * Haken-Rand und eine kleine Marke — die Zeile bleibt Text auf Glas. */
+.g-zeile.p-dringend, .g-zeile.p-wichtig { --p: var(--crit); position: relative; }
+.g-zeile.p-wichtig { --p: var(--warn); }
+.g-zeile.p-dringend::before, .g-zeile.p-wichtig::before {
+  content: ""; position: absolute; inset: 3px -10px; border-radius: 14px; pointer-events: none; z-index: -1;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--p) 13%, transparent), color-mix(in srgb, var(--p) 3%, transparent) 55%, transparent);
+}
+.g-zeile.p-wichtig::before { background: linear-gradient(90deg, color-mix(in srgb, var(--p) 9%, transparent), transparent 55%); }
+.g-blatt .g-liste { position: relative; z-index: 0; }
+.g-marke {
+  flex: none; padding: 2px 8px; border-radius: 999px; font-size: 11px; line-height: 1.4; letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--p, var(--crit)) 80%, var(--text-1));
+  background: color-mix(in srgb, var(--p, var(--crit)) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--p, var(--crit)) 26%, transparent);
+}
+.g-marke.dringend { --p: var(--crit); }
+.g-marke.wichtig { --p: var(--warn); }
+.g-eingabe .g-tabs button.an[data-p="dringend"] { background: color-mix(in srgb, var(--crit) 26%, transparent); }
+.g-eingabe .g-tabs button.an[data-p="wichtig"] { background: color-mix(in srgb, var(--warn) 22%, transparent); }
+
+/* ── Diese Woche: Angaben beim Eintragen und Bearbeiten ─────────────────── */
+.g-frei.klein { font-size: 15px; margin: 12px 0 4px; color: var(--text-2); }
+.g-neu-angaben { margin-top: 12px; padding: 12px 16px 16px; border-radius: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); }
+.g-angaben { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.g-wahl { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.g-wahl > .g-leise { width: 64px; flex: none; font-size: 12px; }
+.g-blatt .g-wahl .g-pille.klein { min-height: 32px; padding: 0 12px; font-size: 12px; gap: 8px; }
+.g-blatt .g-wahl .g-pille.an { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.22); }
+.g-kat-punkt { width: 7px; height: 7px; border-radius: 50%; background: var(--kat); flex: none; }
+.g-feld-text {
+  width: 100%; min-height: 40px; padding: 0 16px; border-radius: 14px; font: inherit; font-size: 15px; font-weight: 400;
+  color: var(--text-1); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.09); outline: none;
+}
+.g-feld-text.leise { font-size: 13px; min-height: 36px; color: var(--text-2); }
+.g-feld-text:focus { border-color: var(--line-2); }
+.g-feld-text::placeholder { color: var(--text-3); }
+.g-bearbeiten { display: flex; flex-direction: column; gap: 8px; padding: 12px 0 16px; }
+.g-bearbeiten .g-knoepfe { margin-top: 8px; }
+@media (max-width: 760px) { .g-wahl > .g-leise { width: 100%; } }
+
+/* ── Ohne Löcher (Paul 2026-11-03: „extrem viele Whitespaces") ─────────────
+ * Aufgaben: die rechte Spalte ist so hoch wie „Deine Aufgaben"; der Horizont
+ * füllt den Rest nach unten und rollt, statt nach acht Einträgen aufzuhören.
+ * Die Liste trägt mit `height: 0` nichts zur Zeilenhöhe bei — sonst würde sie
+ * die linke Karte strecken statt sich selbst. */
+#aufgaben.g-raster { align-items: stretch; }
+#aufgaben > .g-span-5 > .g-hz { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+#aufgaben .g-hz-liste { flex: 1 1 auto; height: 0; min-height: 220px; overflow-y: auto; margin-right: -12px; padding-right: 12px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; }
+/* Zeit für dich: beide Spalten gleich hoch, die letzte Karte wächst mit. */
+.g-bewusst.g-raster { align-items: stretch; }
+.g-bewusst > .g-spalte > .g-blatt:last-child { flex: 1 1 auto; }
+/* Auswahl, Ideen, Rückblick: eine Leiste statt einer Karte. */
+.g-blatt.g-bw-mehr { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; padding: 16px 24px; border-radius: 22px; }
+.g-bw-mehr .bewusst-routines, .g-bw-mehr .bewusst-entry { flex: 0 1 auto; padding: 0; border: 0; gap: 4px 16px; justify-content: flex-start; }
+.g-bw-mehr .bewusst-routines h3 { margin: 0; font-size: 15px; font-weight: 400; }
+.g-bw-mehr .bewusst-routines p, .g-bw-mehr .bewusst-entry p { margin: 0; font-size: 13px; color: var(--text-2); }
+.g-bw-mehr .bewusst-routines > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+.g-bw-mehr .bewusst-status:empty { display: none; }
+.g-bw-mehr .bewusst-footer { margin: 0 0 0 auto; padding: 0; border: 0; font-size: 13px; color: var(--text-2); }
+.g-bw-mehr .bewusst-editor, .g-bw-mehr #bewusst-explore, .g-bw-mehr [role="alert"], .g-bw-mehr .bewusst-footer details[open] { flex: 1 1 100%; }
+@media (max-width: 960px) {
+  #aufgaben .g-hz-liste { height: auto; min-height: 0; overflow: visible; margin-right: 0; padding-right: 0; }
+}
+
+/* ── Wetter (GWetter) ─────────────────────────────────────────────────────
+ * Hoch/Tief links, Werte rechts, darunter die Stunden als Leiste. */
+.g-wetter-kern { margin-top: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.g-wetter .g-zahl.gross { font-size: 56px; }
+.g-wetter-werte { margin: 0; text-align: right; line-height: 1.55; }
+.g-stunden { margin-top: 20px; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.g-stunde { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0 12px; border-radius: 16px; font-size: 12px; color: var(--text-2); }
+.g-stunde svg { width: 20px; height: 20px; color: var(--text-1); opacity: 0.85; }
+.g-stunde b { font-size: 15px; font-weight: 400; color: var(--text-1); font-variant-numeric: tabular-nums; }
+.g-stunde.jetzt { background: rgba(255, 255, 255, 0.08); }
+.g-stunde.jetzt span { color: var(--text-1); }
+.g-stunde.nass svg { color: color-mix(in srgb, var(--accent) 70%, var(--text-1)); opacity: 1; }
+@media (max-width: 760px) {
+  .g-stunden { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .g-wetter .g-zahl.gross { font-size: 44px; }
+}
+
+/* ── Seitenleiste im Stil G: nur Zeichen, der Funke sagt „hier" ───────────── */
+[data-stil="g"] .side-rail { gap: 4px; right: 10px; }
+.side-rail .g-rail-btn {
+  position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  background: none; border: 0; color: var(--text-2); cursor: pointer; text-shadow: var(--shadow-text);
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.35));
+  transition: color 160ms var(--ease);
+}
+.side-rail .g-rail-btn:hover { color: var(--text-1); }
+.side-rail .g-rail-btn.an, .side-rail .g-rail-btn.offen { color: var(--text-1); }
+.side-rail .g-rail-btn.an::after {
+  content: ""; position: absolute; left: 50%; bottom: 5px; width: 3px; height: 3px; margin-left: -1.4px;
+  border-radius: 50%; background: var(--accent);
+}
+.side-rail .g-rail-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .side-rail .g-rail-btn { transition: none; } }
+/* Posteingang und Wetter nebeneinander; beide Karten so hoch wie die Zeile. */
+.g-paar.g-raster { align-items: stretch; }
+.g-paar > div { display: flex; flex-direction: column; min-width: 0; }
+.g-paar > div > * { flex: 1 1 auto; }
+.g-bw-mehr .bewusst-link { font-size: 13px; }
+
+/* ── Timer (GTimer) — Artboard „Glas-Timer" ───────────────────────────── */
+.g-uhr { display: flex; flex-direction: column; align-items: center; min-width: 0; padding-top: 8px; }
+.g-ring { position: relative; width: min(360px, 82vw); aspect-ratio: 1; margin-top: 32px; display: grid; place-items: center; }
+.g-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.g-ring .spur { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 1; }
+.g-ring .striche { fill: none; stroke: rgba(255, 255, 255, 0.22); stroke-width: 6; stroke-dasharray: 1 13.3; }
+.g-ring .fuell { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.g-ring .kopf { fill: var(--accent); }
+.g-ring .kopf-schein { display: none; }
+.g-ring-innen { position: relative; text-align: center; }
+.g-ring-innen .g-zahl { justify-content: center; font-variant-numeric: tabular-nums; text-shadow: var(--shadow-text); }
+.g-ring-innen .g-notiz { margin-top: 12px; font-size: 13px; }
+.g-uhr-knoepfe { margin-top: 24px; display: flex; align-items: center; gap: 12px; }
+.g-rundknopf { width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; background: var(--text-1); color: #12141C; transition: transform 160ms var(--ease), background 160ms var(--ease), opacity 160ms var(--ease); }
+.g-rundknopf svg { width: 14px; height: 14px; }
+.g-rundknopf.gross { width: 64px; height: 64px; }
+.g-rundknopf.gross svg { width: 18px; height: 18px; }
+.g-rundknopf.geist { background: rgba(255, 255, 255, 0.08); color: var(--text-2); border: 1px solid rgba(255, 255, 255, 0.08); }
+.g-rundknopf.geist:hover { background: rgba(255, 255, 255, 0.14); color: var(--text-1); }
+.g-rundknopf:active:not(:disabled) { transform: scale(0.97); }
+.g-rundknopf:disabled { opacity: 0.35; cursor: default; }
+.g-rundknopf:focus-visible, .g-pille-frei:focus-visible, .g-tabs-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.g-pille-frei { margin-top: 16px; min-height: 36px; padding: 0 16px; border-radius: 999px; font: inherit; font-size: 13px; color: var(--text-1); background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; }
+.g-pille-frei:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+.g-pille-frei:disabled { opacity: 0.4; cursor: default; }
+.g-uhr > .g-notiz { margin-top: 12px; }
+.g-eigene { margin-top: 20px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.g-eigene input { width: 64px; min-height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: var(--text-1); font: inherit; }
+.g-tabs-knopf { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 0; background: rgba(255, 255, 255, 0.08); color: var(--text-2); font: inherit; font-size: 13px; cursor: pointer; }
+.g-tabs-knopf:hover { color: var(--text-1); }
+.g-felder { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.g-feld-mit { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.g-feld-mit > span { font-size: 13px; color: var(--text-3); }
+.g-feld-mit input, .g-feld-mit select { min-height: 44px; padding: 0 16px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: var(--text-1); font: inherit; font-size: 15px; color-scheme: dark; min-width: 0; }
+.g-feld-mit input:focus, .g-feld-mit select:focus { outline: none; border-color: rgba(255, 255, 255, 0.3); }
+.g-feld-mit option { color: #12141C; }
+.g-man-fuss { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+.g-man-fuss .g-pille { margin-left: auto; }
+.g-man-fuss .g-pille:disabled { opacity: 0.4; cursor: default; }
+.g-timer-rechts .g-liste .g-zeile { min-height: 44px; }
+.g-timer .g-pillen .g-pille { gap: 8px; }
+.g-timer .g-pillen .g-pille:disabled:not(.an) { opacity: 0.45; cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  .g-ring .fuell, .g-rundknopf { transition: none; }
+}

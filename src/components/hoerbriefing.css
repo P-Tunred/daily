@@ -1,0 +1,76 @@
+/* Dein Tag zum Anhören — ein Knopf unter der Herkunftszeile im Intro.
+   Seit 2026-11-01 schlicht: kein Player-Kasten, keine Leiste, kein Tempo.
+   Sprache der Herkunftszeile (.szl-quelle): mono, versal, leise. Die eine
+   Fläche ist der kleine runde Abspielpunkt — das ist die Handlung; der
+   Fortschritt ist eine Haarlinie unter dem Wort, mehr nicht. */
+
+.hb { margin-top: 14px; }
+
+.hb-knopf {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 40px; padding: 0 2px; margin-left: -2px;
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-2); text-shadow: var(--shadow-text);
+  transition: color 160ms var(--ease);
+}
+
+.hb-zeichen {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 9px; letter-spacing: 0; text-shadow: none;
+  color: var(--ink-1, #10131a); background: var(--accent);
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 40%, transparent);
+  transition: transform 160ms var(--ease), box-shadow 240ms var(--ease);
+}
+.hb-knopf:not(.an) .hb-zeichen { padding-left: 2px; } /* ▶ optisch mittig */
+.hb-knopf.an .hb-zeichen { letter-spacing: -2px; font-size: 8px; }
+
+.hb-wort { position: relative; padding: 4px 0; }
+/* Haarlinie: füllt sich beim Hören von links. transform statt width —
+   läuft auf dem Compositor, nicht durchs Layout. */
+.hb-wort::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(var(--hb-anteil, 0));
+  opacity: 0.8;
+}
+
+.hb-dauer { color: var(--text-3); font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+
+.hb-knopf:hover, .hb-knopf.an { color: var(--text-1); }
+.hb-knopf:hover .hb-zeichen { box-shadow: 0 0 0 5px color-mix(in oklab, var(--accent) 18%, transparent); }
+.hb-knopf:active .hb-zeichen { transform: scale(0.94); }
+.hb-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-knopf, .hb-zeichen { transition: none; }
+  .hb-knopf:active .hb-zeichen { transform: none; }
+}
+
+/* Still-Intro: nur der Abspielpunkt, ein Ring als Fortschritt, die Zeit daneben.
+   Der Ring füllt sich über stroke-dashoffset — einmal je Sekunde, das ist
+   billig genug und bleibt ohne Layout. */
+.hb-ring-knopf {
+  display: inline-flex; align-items: center; gap: 12px; min-height: 44px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; text-shadow: var(--shadow-text);
+  transition: color 160ms var(--ease), transform 160ms var(--ease);
+}
+.hb-ring-knopf:hover, .hb-ring-knopf.an { color: var(--text-1); }
+.hb-ring-knopf:hover { transform: translateY(-1px); }
+.hb-ring-knopf:active { transform: scale(0.98); }
+.hb-ring-knopf:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 999px; }
+.hb-ring { position: relative; width: 44px; height: 44px; flex: none; display: grid; place-items: center; }
+.hb-ring svg { position: absolute; inset: 0; width: 44px; height: 44px; transform: rotate(-90deg); }
+.hb-ring-spur { fill: none; stroke: var(--line-2); stroke-width: 1; }
+.hb-ring-fuellung { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; transition: stroke-dashoffset 300ms linear; }
+.hb-ring-zeichen { font-size: 10px; color: var(--text-1); text-shadow: none; padding-left: 2px; }
+.hb-ring-knopf.an .hb-ring-zeichen { padding-left: 0; letter-spacing: -2px; font-size: 9px; color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-ring-knopf, .hb-ring-fuellung { transition: none; }
+  .hb-ring-knopf:hover, .hb-ring-knopf:active { transform: none; }
+}

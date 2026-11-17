@@ -1,0 +1,94 @@
+Bewusst leben — Transkription des Blatts vom 19.09.2026
+Quelle: raw/notizen/2026-09-19_zielraster-ausgefuellt/transkription.md (Second Brain).
+Kein Foto; die im Original unvollständige Formulierung bleibt gekennzeichnet.
+
+## Die 64 Handlungen
+
+### 1 — Es juckt keinen
+
+1. Meine eigene Zufriedenheit immer zuerst setzen, mit am wichtigsten
+2. Dir klar machen, wie unwichtig es anderen ist, was man gerade macht
+3. Abends Heft führen über Sachen, wo ich mir Sorgen gemacht hab — unnötig
+4. Handy in der Tasche lassen, wenn ich irgendwo warte
+5. Versuchen weniger zu urteilen, weil man sich dann auch weniger Sorgen macht
+6. Abends aufschreiben, was mich confident gemacht hat
+7. Öfters Sachen für den Plot machen
+8. 1× pro Woche versuchen, ein Gespräch anzufangen
+
+### 2 — „Ich hab zu wenig Zeit"
+
+1. NSDR und meditieren jeden Tag nutzen
+2. Nicht zwei Sachen auf einmal machen
+3. Die Planner-Version mehr nutzen in Daily
+4. Wenn ich Zeit habe, wirklich für was Neues aus diesem Feld
+5. Wenn man lernt, wirklich lernen (fokussiert sein) — 25/5-Timer
+6. Jeden Abend eintragen, was ich Unnötiges gemacht hab
+7. Öfters eintragen in Daily, was ich in der Zeit gemacht hab
+8. Sonntag 15 min Top-5-Zeitfresser angucken
+
+### 3 — Meinen Körper respektieren
+
+1. Jeden Morgen 5 min dehnen
+2. Mehr gesund kochen, mehr Fasern, mehr Proteine + Kreatin
+3. 1 längerer Lauf die Woche, solang noch möglich
+4. So viel mit dem Rad fahren wie möglich
+5. Versuchen zu meal preppen + gesund
+6. 3× die Woche in das Gym
+7. Jeden Monat neue Sportart machen (Bouldern, Wandern)
+8. Mehr darauf achten, wie sich der Körper fühlt, und anpassen
+
+### 4 — Offen für neues
+
+1. 1× Buch pro Monat außerhalb Produktivität und Uni
+2. Kreative Seite mehr kennenlernen (malen / skizzieren 1×/Monat)
+3. Ein Ja oder machen zu dem, was ich sonst nicht machen könnte
+4. Vertiefen in Bereiche und Domain Expert werden (4 h/Monat)
+5. Systematisch in unangenehme neue Situationen bringen
+6. Konzert / Lesung / Kultur pro Monat versuchen zu machen
+7. Mit neuen Leuten neue Sachen machen, immer mehr einladen
+8. Museum / Kunst pro Monat, verstehen und genießen
+
+### 5 — Konzepte verstehen, nicht einfach akzeptieren
+
+1. Weniger als generelle Erklärung, sondern für Frage *(Formulierung im Original unvollständig)*
+2. Jede Woche überlegen, was ich automatisieren kann
+3. Ruhig auch mal Deep Dive, wenn ich das Konzept verstehen will
+4. In [FODS](foundations-of-data-science-ht2026.md) aufpassen, verstehen wie KI funktioniert
+5. Mich selbst mehr verstehen — warum mache ich Sachen, die ich mache
+6. KI mehr zum Einordnen von Content nutzen, Klausurvorbereitung
+7. Versuchen, Leuten KI beizubringen
+8. Wenn ich Sachen nicht verstehe, frage ich einfach, anstatt stehenzubleiben
+
+### 6 — Bessere Kommunikation Skills
+
+1. Leute mehr in die Augen gucken, Leute zum Lachen bringen
+2. „Warum" und „Wie" statt einfach nur Smalltalk
+3. Langsamer reden, mehr vom Englischen kopieren!
+4. In Leuten das Beste hervorheben und sagen — muss stimmen und authentisch sein
+5. Beispiel nehmen an: Ruhe ausstrahlen, Pause nutzen
+6. Versuchen zu sagen, wenn einem etwas nicht gefallen hat
+7. Jeden Tag 1 Kompliment machen — Bonus, wenn Fremder
+8. Namen merken und mehr Tiefe in das Gespräch („interessiert dich")
+
+### 7 — Projekte haben, die man zeigen kann
+
+1. Versuchen aktiv an Projekten zu arbeiten, Umsatz machen, mind. 1. Kunde
+2. Bringt das Projekt wirklich was — Hauptsache, es nutzt irgendwem
+3. Versuchen, Cold Outreach zu optimieren und zu automatisieren
+4. Suchen, dass dein GitHub mehr Aufsehen bekommt
+5. Website, die mein Leben beschreibt, als Aushängeschild
+6. Aktiv versuchen, GitHub zu nutzen, um Projekte zu speichern
+7. Versuchen, nur noch KI-Abos zu haben, den Rest nachbauen
+8. [Dashboard](hermes-dashboard.md) als vollen Assistenten nutzen
+
+### 8 — Mehr ausprobieren vom Style her
+
+1. 1× pro Monat Vintage shoppen
+2. Was soll das Theme sein — von Musik, Kleidung …
+3. Persona von dir erstellen — musst dir nur vorstellen, wer du sein willst
+4. Nicht nur auf Style konzentrieren
+5. Jeden Abend auf Pinterest und Co. eine Persona erstellen
+6. 1× pro Monat Sache tragen, die zu auffällig ist
+7. Fotos machen von Outfits, die mir gefallen
+8. Öfters in Läden gehen und nichts kaufen, einfach nur checken
+

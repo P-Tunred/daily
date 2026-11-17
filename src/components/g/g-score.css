@@ -1,0 +1,214 @@
+/* Stil „G" — Score-Seite (GScore, GScoreVerlauf). Eigene Datei, weil die Seite
+ * mit Verlauf, Kalender und Wochentagen deutlich gewachsen ist.
+ *
+ * Vier Farben tragen die ganze Seite und bedeuten überall dasselbe:
+ * Lernzeit = Akzent, Aufgaben = helles Weiß, Routinen = ok, Altlasten = krit. */
+
+.g-score {
+  --sc-zeit: var(--accent);
+  --sc-auf: rgba(255, 255, 255, 0.78);
+  /* eigener Ton: im Glas-Thema ist --ok derselbe Blauton wie der Akzent */
+  --sc-rout: #7FC8B5;
+  --sc-alt: var(--crit);
+  --sc-leer: rgba(255, 255, 255, 0.07);
+}
+.g-score .t-zeit { background: var(--sc-zeit); }
+.g-score .t-auf { background: var(--sc-auf); }
+.g-score .t-rout { background: var(--sc-rout); }
+.g-score .t-alt { background: var(--sc-alt); }
+.g-score .t-rest { background: var(--sc-leer); }
+.g-punkt { display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; vertical-align: 1px; }
+.g-score .g-gut { color: var(--ok); }
+.g-score .g-schlecht { color: var(--crit); }
+
+/* ── Held: Zahl, Vergleich, Mischung, Teile ── */
+.g-score .g-held { padding-right: 40px; }
+.g-score-kern { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 20px; }
+.g-score-kern .g-zahl.riesig { margin-top: 0; }
+.g-vergleich { list-style: none; margin: 0 0 12px; padding: 0; display: flex; gap: 24px; }
+.g-vergleich li { display: flex; flex-direction: column; gap: 4px; }
+.g-vergleich span { font-size: 12px; color: var(--text-2); }
+.g-vergleich b { font-size: 24px; font-weight: 300; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--text-1); }
+.g-vergleich small { font-size: 12px; color: var(--text-2); }
+.g-vergleich small.g-gut { color: var(--ok); }
+.g-vergleich small.g-schlecht { color: var(--crit); }
+
+.g-mix { display: flex; gap: 2px; height: 6px; margin-top: 24px; border-radius: 999px; overflow: hidden; }
+.g-mix i { flex-basis: 0; min-width: 0; }
+.g-mix.gross { height: 10px; margin-top: 20px; }
+
+.g-teile { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.g-teile li { display: grid; grid-template-columns: 210px minmax(0, 1fr) 84px; align-items: center; gap: 20px; }
+.g-teil-name { font-size: 13px; color: var(--text-1); }
+.g-teil-name small { display: block; margin: 2px 0 0 16px; font-size: 12px; color: var(--text-2); }
+.g-teile .g-linie { margin-top: 0; }
+.g-teile .g-linie.krit i { background: var(--crit); }
+.g-teile .g-linie.krit b { background: var(--crit); }
+.g-teil-wert { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; }
+.g-teil-wert b { font-size: 24px; font-weight: 300; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.g-teil-wert small { font-size: 12px; color: var(--text-2); white-space: nowrap; }
+
+/* ── Was gerade bremst ── */
+.g-satz { margin: 20px 0 0; font-size: 20px; font-weight: 400; letter-spacing: 0; line-height: 1.3; color: var(--text-1); }
+.g-satz.klein { margin-top: 16px; font-size: 18px; }
+.g-hebel { min-height: 60px; gap: 16px; }
+.g-hebel .g-text small { font-size: 12px; color: var(--text-2); }
+.g-hebel .g-pille { flex: none; }
+.g-altlasten { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.g-altlasten li { display: flex; align-items: center; gap: 12px; min-width: 0; font-size: 13px; }
+.g-alt-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g-altlasten small { flex: none; font-size: 12px; color: var(--crit); font-variant-numeric: tabular-nums; }
+
+/* ── Kennzahlen-Leiste ── */
+.g-kennzahlen { padding: 20px 24px; }
+.g-kennzahlen dl { margin: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.g-kennzahlen dl > div { padding: 2px 20px; min-width: 0; }
+.g-kennzahlen dl > div + div { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+.g-kennzahlen dl > div:first-child { padding-left: 0; }
+.g-kennzahlen dt { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-kennzahlen dd { margin: 8px 0 0; font-size: 26px; font-weight: 300; letter-spacing: 0; font-variant-numeric: tabular-nums; color: var(--text-1); white-space: nowrap; }
+.g-kennzahlen dd small { margin-left: 8px; font-size: 12px; letter-spacing: 0; color: var(--text-2); }
+
+/* ── Entwicklung: gestapelte Säulen ── */
+.g-saeulen-rahmen { --plus: 168px; --minus: 22px; position: relative; margin-top: 24px; }
+.g-sc-linie { position: absolute; left: 0; right: 0; bottom: calc(var(--minus) + 22px + var(--plus) * var(--h, 0.7)); height: 0; border-top: 1px dashed rgba(255, 255, 255, 0.24); pointer-events: none; z-index: 1; }
+.g-sc-linie.stark { --h: 0.7; }
+.g-sc-linie.schnitt { border-top-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.g-sc-linie b { position: absolute; right: 0; top: -17px; font-size: 11px; font-weight: 400; color: var(--text-2); }
+.g-sc-linie.schnitt b { top: 3px; color: color-mix(in srgb, var(--accent) 80%, var(--text-1)); }
+.g-saeulen { list-style: none; margin: 0; padding: 0; display: flex; gap: 12px; }
+.g-saeulen-rahmen.monat .g-saeulen { gap: 4px; }
+.g-saeule { flex: 1 1 0; min-width: 0; }
+.g-saeule button { width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: stretch; border-radius: 10px; }
+.g-saeule button:disabled { cursor: default; }
+.g-saeule button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.g-saeule .plus { position: relative; height: var(--plus); display: flex; flex-direction: column-reverse; gap: 2px; border-bottom: 1px solid rgba(255, 255, 255, 0.18); }
+.g-saeule .plus i { display: block; flex: none; min-height: 0; border-radius: 3px; opacity: 0.82; transition: opacity 160ms var(--ease); }
+.g-saeule .plus i.t-leer { height: 3px; background: var(--sc-leer); }
+.g-saeule .plus em { position: absolute; left: 0; right: 0; top: -2px; font-style: normal; font-size: 12px; text-align: center; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.g-saeule .minus { height: var(--minus); padding-top: 2px; }
+.g-saeule .minus i { display: block; background: var(--sc-alt); border-radius: 0 0 3px 3px; opacity: 0.8; }
+.g-saeule small { height: 18px; margin-top: 4px; font-size: 11px; text-align: center; color: var(--text-2); white-space: nowrap; }
+.g-saeule.zukunft .plus { border-bottom-style: dashed; border-bottom-color: rgba(255, 255, 255, 0.1); }
+.g-saeule.zukunft small { opacity: 0.5; }
+.g-saeule button:hover .plus i { opacity: 1; }
+.g-saeule.an .plus i { opacity: 1; }
+.g-saeule.an small, .g-saeule.an .plus em { color: var(--text-1); }
+.g-saeule.an .plus::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--accent); }
+/* Säulen im Woche-Modus etwas schmaler als die Spalte — sie stehen frei. */
+.g-saeulen-rahmen.woche .g-saeule .plus i, .g-saeulen-rahmen.woche .g-saeule .minus i { margin: 0 18%; }
+
+.g-legende { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--text-2); }
+.g-legende span { display: inline-flex; align-items: center; gap: 8px; }
+.g-legende i { width: 10px; height: 4px; border-radius: 2px; }
+.g-tagdetail { margin: 16px 0 0; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.07); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; font-size: 13px; color: var(--text-1); }
+.g-tagdetail b { font-weight: 400; }
+.g-tagdetail .leise { color: var(--text-2); }
+
+/* ── Herkunft der Punkte ── */
+.g-her-liste { margin: 20px 0 0; display: flex; flex-direction: column; gap: 12px; }
+.g-her-liste > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.g-her-liste dt { font-size: 13px; color: var(--text-1); }
+.g-her-liste dd { margin: 0; font-size: 22px; font-weight: 300; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.g-her-liste dd small { margin-left: 8px; font-size: 12px; letter-spacing: 0; color: var(--text-2); }
+
+/* ── Kalender ── */
+.g-kal { margin-top: 24px; display: flex; gap: 12px; }
+.g-kal-tage { display: grid; grid-template-rows: repeat(7, 1fr); gap: 4px; padding-top: 20px; font-size: 11px; color: var(--text-2); }
+.g-kal-tage span { line-height: 1; display: flex; align-items: center; }
+.g-kal-raster { flex: 1; min-width: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; }
+.g-kal-woche { position: relative; display: grid; grid-template-rows: repeat(7, auto); gap: 4px; padding-top: 20px; }
+.g-kal-monat { position: absolute; top: 0; left: 0; font-size: 11px; color: var(--text-2); white-space: nowrap; }
+.g-kal-tag { display: block; aspect-ratio: 3 / 2; border-radius: 4px; background: var(--sc-leer, rgba(255, 255, 255, 0.07)); }
+.g-kal-tag.s0 { background: rgba(255, 255, 255, 0.10); }
+.g-kal-tag.s1 { background: rgba(255, 255, 255, 0.20); }
+.g-kal-tag.s2 { background: rgba(255, 255, 255, 0.36); }
+.g-kal-tag.s3 { background: rgba(255, 255, 255, 0.60); }
+.g-kal-tag.s4 { background: var(--text-1); }
+.g-kal-tag.zukunft { background: none; border: 1px dashed rgba(255, 255, 255, 0.08); }
+/* Wie der Streak in der Lernzeit: Weißstufen; der Akzent nur für heute. */
+.g-kal-tag.heute { background: var(--accent); }
+.g-kal-skala { margin-top: 16px; display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 12px; color: var(--text-2); }
+.g-kal-skala .g-kal-tag { width: 14px; border-radius: 3px; }
+.g-kal-skala span { margin: 0 4px; }
+
+/* ── Wochentage ── */
+.g-wt-liste { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.g-wt-liste li { display: grid; grid-template-columns: 26px minmax(0, 1fr) 30px; align-items: center; gap: 12px; font-size: 13px; color: var(--text-2); }
+.g-wt-spur { height: 6px; border-radius: 999px; background: var(--sc-leer); overflow: hidden; }
+.g-wt-spur i { display: block; height: 100%; border-radius: inherit; background: rgba(255, 255, 255, 0.5); }
+.g-wt-liste b { font-weight: 400; font-size: 15px; text-align: right; color: var(--text-1); font-variant-numeric: tabular-nums; }
+.g-wt-liste li.bester { color: var(--text-1); }
+.g-wt-liste li.bester .g-wt-spur i { background: var(--accent); }
+
+.g-entwicklung .g-kopf { flex-wrap: wrap; gap: 12px; }
+.g-entwicklung .g-tabs button { white-space: nowrap; }
+
+@media (max-width: 1240px) {
+  .g-kennzahlen dl { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 20px; }
+  .g-kennzahlen dl > div:nth-child(5) { border-left: 0; padding-left: 0; }
+}
+@media (max-width: 960px) {
+  .g-score .g-held { padding-right: 4px; }
+  .g-teile li { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; }
+  .g-teile .g-linie { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 600px) {
+  .g-vergleich { gap: 20px; }
+  .g-vergleich b { font-size: 20px; }
+  .g-kennzahlen dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g-kennzahlen dl > div { padding: 0 0 0 16px; }
+  .g-kennzahlen dl > div:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .g-kennzahlen dl > div:nth-child(5) { border-left: 0; padding-left: 0; }
+  .g-saeulen-rahmen { --plus: 140px; }
+  .g-saeulen { gap: 8px; }
+  .g-saeulen-rahmen.monat .g-saeulen { gap: 2px; }
+  .g-saeulen-rahmen.woche .g-saeule .plus i, .g-saeulen-rahmen.woche .g-saeule .minus i { margin: 0 8%; }
+  .g-kal-tage { display: none; }
+  .g-kal-raster { gap: 4px; }
+  .g-kal-woche { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-saeule .plus i { transition: none; }
+}
+
+/* Klausuren (GKlausurStand) — Zeit übrig, wie weit, was schieben. */
+.g-score .g-knapp { color: var(--warn); }
+.g-kl-liste { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
+.g-kl-liste.eine { grid-template-columns: minmax(0, 1fr); }
+.g-kl { min-width: 0; padding: 0 28px; }
+.g-kl:first-child { padding-left: 0; }
+.g-kl + .g-kl { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+.g-kl-kopf { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; }
+.g-kl-name { font-size: 20px; font-weight: 400; color: var(--text-1); }
+.g-kl-lage { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-1); }
+.g-kl-lage.g-gut { color: var(--ok); }
+.g-kl-wann { margin-left: auto; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.g-kl-fort { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.g-kl-fort .g-linie { flex: 1; margin-top: 0; }
+.g-kl-fort small { flex: none; font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.g-kl-zahlen { margin: 18px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g-kl-zahlen > div { min-width: 0; padding: 0 16px; }
+.g-kl-zahlen > div:first-child { padding-left: 0; }
+.g-kl-zahlen > div + div { border-left: 1px solid rgba(255, 255, 255, 0.08); }
+.g-kl-zahlen dt { font-size: 12px; color: var(--text-2); }
+.g-kl-zahlen dd { margin: 6px 0 2px; font-size: 26px; font-weight: 300; font-variant-numeric: tabular-nums; color: var(--text-1); white-space: nowrap; }
+.g-kl-zahlen small { display: block; font-size: 12px; color: var(--text-3, var(--text-2)); line-height: 1.35; }
+.g-kl-satz { margin: 14px 0 0; font-size: 14px; color: var(--text-1); }
+.g-kl-schieben { margin: 6px 0 0; padding: 0; list-style: none; counter-reset: kl; }
+.g-kl-schieben li { counter-increment: kl; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: baseline; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 14px; color: var(--text-1); }
+.g-kl-schieben li::before { content: counter(kl); font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.g-kl-schieben li span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.g-kl-schieben small { font-size: 12px; color: var(--text-2); text-align: right; white-space: nowrap; }
+@media (max-width: 960px) {
+  .g-kl-liste { grid-template-columns: minmax(0, 1fr); }
+  .g-kl { padding: 0; }
+  .g-kl + .g-kl { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin-top: 22px; padding-top: 22px; }
+}
+@media (max-width: 600px) {
+  .g-kl-zahlen dd { font-size: 20px; }
+  .g-kl-zahlen > div { padding: 0 10px; }
+  .g-kl-schieben li { grid-template-columns: 18px minmax(0, 1fr); }
+  .g-kl-schieben small { grid-column: 2; text-align: left; white-space: normal; }
+  .g-kl-wann { margin-left: 0; width: 100%; }
+}

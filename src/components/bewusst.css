@@ -1,0 +1,128 @@
+/* One native Card surface. Hierarchy through space and type, not nested cards. */
+.bewusst { color: var(--text-1); }
+.bewusst-intro { margin-bottom: var(--space-lg); max-width: 65ch; }
+.bewusst h2 { font-size: var(--fs-h2); font-weight: 400; letter-spacing: var(--tr-h2); text-wrap: balance; }
+.bewusst h3 { font-size: var(--fs-h3); font-weight: 500; letter-spacing: var(--tr-h3); }
+.bewusst p { margin-block: var(--space-sm); line-height: 1.6; color: var(--text-2); }
+.bewusst .bewusst-meta, .bewusst .bewusst-caption { font-size: var(--fs-meta); color: var(--text-2); overflow-wrap: anywhere; }
+.bewusst-layout { min-width: 0; border: 0; padding: 0; margin: 0; }
+.bewusst button, .bewusst select, .bewusst input:not([type=checkbox]) { font: inherit; font-size: var(--fs-meta); color: var(--text-1); background: var(--fill-0); border: 1px solid var(--line-1); border-radius: var(--r-sm); padding: var(--space-sm) var(--space-md); min-height: 44px; }
+.bewusst button { cursor: pointer; }
+.bewusst button:hover:not(:disabled), .bewusst summary:hover { background: var(--fill-1); }
+.bewusst button:disabled { opacity: 0.5; cursor: default; }
+.bewusst button.bewusst-link { background: transparent; border-color: transparent; padding-inline: var(--space-sm); color: var(--text-2); }
+.bewusst button.bewusst-link:hover { color: var(--text-1); background: var(--fill-1); }
+.bewusst :is(button, input, select, summary, a, [tabindex]):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.bewusst-routines, .bewusst-entry, .bewusst-navigation, .bewusst-progress, .bewusst-row-main, .bewusst-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md); }
+.bewusst-routines { padding-block: var(--space-md); border-top: 1px solid var(--line-1); }
+.bewusst-routines p { font-size: var(--fs-meta); margin-bottom: 0; }
+.bewusst-actions { justify-content: flex-start; gap: var(--space-sm); }
+.bewusst-editor { padding-block: var(--space-md); }
+.bewusst-entry { padding-top: var(--space-sm); }
+.bewusst-entry p { font-size: var(--fs-meta); }
+.bewusst-entry button.bewusst-link { color: var(--accent); }
+.bewusst-navigation { margin-top: var(--space-lg); gap: var(--space-sm); border-bottom: 1px solid var(--line-1); }
+.bewusst-nav { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.bewusst-nav button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; padding-inline: var(--space-sm); color: var(--text-2); }
+.bewusst-nav button[aria-selected=true] { color: var(--text-1); border-bottom-color: var(--accent); }
+.bewusst [role=tabpanel] { min-width: 0; padding-top: var(--space-md); }
+.bewusst-progress { margin-top: var(--space-md); font-size: var(--fs-meta); font-variant-numeric: tabular-nums; }
+.bewusst-progress strong { font-size: var(--fs-h3); font-weight: 500; color: var(--text-1); }
+.bewusst-progress span { color: var(--text-2); }
+.bewusst select { max-width: 100%; min-width: 0; }
+.bewusst option { background: var(--ink-2); color: var(--text-1); }
+.bewusst-row { border-top: 1px solid var(--line-1); padding-block: var(--space-md); }
+.bewusst-row:first-of-type { border-top: 0; }
+.bewusst-row-copy { flex: 1; min-width: 0; }
+.bewusst-row-title, .bewusst-check { font-size: var(--fs-body); font-weight: 500; letter-spacing: var(--tr-h3); }
+.bewusst-row-copy p { margin-block: var(--space-xs) 0; }
+.bewusst-check, .bewusst-selection label { display: flex; align-items: center; gap: var(--space-md); min-height: 44px; cursor: pointer; }
+.bewusst input[type=checkbox] { appearance: none; width: 22px; height: 22px; flex-shrink: 0; border: 2px solid var(--line-3); border-radius: 50%; display: grid; place-content: center; cursor: pointer; }
+.bewusst input[type=checkbox]:checked { background: var(--accent); border-color: var(--accent); }
+.bewusst input[type=checkbox]:checked::after { content: ''; width: 9px; height: 5px; border-left: 2px solid var(--ink-0); border-bottom: 2px solid var(--ink-0); transform: translateY(-1px) rotate(-45deg); }
+.bewusst input[type=checkbox]:disabled { opacity: 0.5; cursor: default; }
+@media (forced-colors: active) { .bewusst input[type=checkbox] { appearance: auto; } .bewusst input[type=checkbox]::after { display: none; } }
+.bewusst-counter { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--fs-meta); font-variant-numeric: tabular-nums; }
+.bewusst-counter button { min-width: 44px; padding-inline: var(--space-sm); border-color: transparent; background: transparent; font-size: var(--fs-h3); }
+.bewusst-counter span { min-width: 100px; text-align: center; color: var(--text-2); }
+.bewusst summary { cursor: pointer; min-height: 44px; padding-block: 12px; font-size: var(--fs-meta); color: var(--text-2); border-radius: var(--r-sm); }
+.bewusst details label { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); font-size: var(--fs-meta); margin-block: var(--space-sm); }
+.bewusst details input { max-width: 100%; width: 100%; }
+.bewusst details a { display: inline-block; padding-block: 12px; color: var(--accent); text-decoration: underline; }
+.bewusst pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: var(--fs-meta); line-height: 1.7; color: var(--text-2); }
+.bewusst-selection { border: 0; padding: 0; margin-block: var(--space-md); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) var(--space-lg); }
+.bewusst-selection legend { font-size: var(--fs-meta); color: var(--text-2); margin-bottom: var(--space-sm); }
+.bewusst-selection label { padding-block: var(--space-sm); }
+.bewusst-history { display: flex; flex-direction: column; gap: var(--space-md); margin-block: var(--space-md); }
+.bewusst-history h4 { font-size: var(--fs-meta); font-weight: 500; }
+.bewusst-history p { font-size: var(--fs-meta); }
+.bewusst-status { font-size: var(--fs-meta); }
+.bewusst-status:empty { margin: 0; }
+.bewusst-footer { border-top: 1px solid var(--line-1); margin-top: var(--space-md); padding-top: var(--space-xs); }
+@media (max-width: 700px) {
+  .bewusst { padding: var(--space-lg); }
+  .bewusst-routines, .bewusst-entry { align-items: flex-start; gap: var(--space-sm); }
+  .bewusst-selection { grid-template-columns: minmax(0, 1fr); }
+  .bewusst-row-main { align-items: flex-start; flex-direction: column; gap: var(--space-sm); }
+  .bewusst-nav { gap: var(--space-xs); }
+  .bewusst-nav button { padding-inline: var(--space-sm); }
+  .bewusst-counter { align-self: flex-end; }
+}
+
+/* ── Heute für dich (2026-10-31) ──────────────────────────────────────────
+   Oben in der Karte, weil es das ist, was man täglich braucht: abhaken, sehen
+   wie die Woche lief, und ob heute Platz für etwas ist. Die Ideen für Woche
+   und Monat bleiben darunter, eingeklappt. */
+.bewusst-heute { display: flex; flex-direction: column; gap: var(--space-md); padding-bottom: var(--space-md); margin-bottom: var(--space-sm); }
+.bewusst-heute-kopf { display: flex; align-items: center; gap: var(--space-md); }
+.bewusst-heute-kopf p { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.bewusst-heute-kopf strong { font-size: var(--fs-h3); font-weight: 500; color: var(--text-1); }
+.bewusst-ring { flex: none; width: 48px; height: 48px; position: relative; display: grid; place-items: center; }
+/* Der Ring als eigene Ebene — eine Maske direkt auf dem Element schnitte auch
+   die Zahl in der Mitte weg. */
+.bewusst-ring::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--anteil, 0%), var(--line-2, rgba(255,255,255,0.12)) 0);
+  -webkit-mask: radial-gradient(circle, transparent 0 17px, #000 18px); mask: radial-gradient(circle, transparent 0 17px, #000 18px);
+}
+.bewusst-ring b { position: relative; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-1); }
+.bewusst-tage { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.bewusst-tage li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-md); padding-block: 6px; border-top: 1px solid var(--line-1); }
+.bewusst-tage li:first-child { border-top: 0; }
+.bewusst .bewusst-haken {
+  width: 34px; height: 34px; min-height: 34px; padding: 0; border-radius: 50%; display: grid; place-items: center;
+  border: 2px solid var(--line-3, rgba(255,255,255,0.25)); background: transparent; color: transparent;
+  transition: background 200ms var(--ease, ease), border-color 200ms var(--ease, ease), color 200ms var(--ease, ease);
+}
+.bewusst .bewusst-haken svg { width: 15px; height: 15px; }
+.bewusst .bewusst-haken:hover:not(:disabled) { border-color: var(--accent); background: transparent; color: var(--text-4); }
+.bewusst .bewusst-haken.an { background: var(--accent); border-color: var(--accent); color: var(--ink-0, #0A0C12); }
+.bewusst-tage-titel { font-size: var(--fs-body); color: var(--text-1); }
+.bewusst-punkte { display: inline-flex; gap: 5px; }
+.bewusst-punkte i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--line-2, rgba(255,255,255,0.18)); }
+.bewusst-punkte i.ja { background: var(--accent); border-color: var(--accent); }
+.bewusst-punkte i.nein { border-color: var(--text-4); }
+.bewusst-punkte i.offen { border-color: var(--accent); border-style: dashed; }
+.bewusst-punkte i.pause { background: var(--line-2, rgba(255,255,255,0.18)); }
+.bewusst-punkte i.unbekannt { border-style: dotted; opacity: 0.55; }
+.bewusst .bewusst-frei { margin: 0; font-size: var(--fs-meta); color: var(--text-2); }
+.bewusst .bewusst-frei b { color: var(--text-1); font-weight: 500; }
+.bewusst .bewusst-frei .bewusst-link { color: var(--accent); }
+.bewusst-anpassen { padding: var(--space-sm) var(--space-md); border-radius: var(--r-sm); border: 1px solid color-mix(in oklab, var(--warn, #e9b65a) 30%, transparent); background: color-mix(in oklab, var(--warn, #e9b65a) 6%, transparent); }
+.bewusst-anpassen p { margin-top: 0; font-size: var(--fs-meta); }
+@media (max-width: 560px) { .bewusst-tage li { grid-template-columns: auto minmax(0, 1fr); } .bewusst-punkte { grid-column: 2; } }
+
+/* ── Diese Woche für dich — dieselbe Form wie die Tagesroutinen ── */
+.bewusst-woche { border-top: 1px solid var(--line-1); padding-top: var(--space-md); }
+.bewusst .bewusst-zaehler span { font-size: 11px; font-weight: 600; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.bewusst .bewusst-zaehler:hover:not(:disabled) span { color: var(--accent); }
+.bewusst .bewusst-zaehler:disabled:not(.an) { opacity: 0.5; }
+.bewusst .bewusst-haken.an:disabled { opacity: 1; }
+.bewusst-stand { font-size: var(--fs-meta); color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bewusst .bewusst-minus {
+  min-height: 0; padding: 0 8px; margin-left: 4px; border: 0; background: transparent; color: var(--text-4); font-size: var(--fs-body); line-height: 1;
+  position: relative;
+}
+.bewusst .bewusst-minus::before { content: ""; position: absolute; inset: -12px -4px; }
+.bewusst .bewusst-minus:hover:not(:disabled) { color: var(--text-1); background: transparent; }
+.bewusst-punkte i.teil { border-color: var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); }

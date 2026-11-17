@@ -1,0 +1,45 @@
+# Täglicher Wächter für Daily — NUR lesend.
+#
+# WARUM ÜBERHAUPT
+# Am 15.08. war das Briefing gespeichert und trotzdem unsichtbar (falsch
+# datiert). Aufgefallen ist das nur, weil zufällig jemand hinsah. Ein Fehler,
+# den niemand sieht, ist teurer als einer, der laut ist — deshalb sieht ab
+# jetzt jeden Morgen etwas hin, das nicht müde wird.
+#
+# WARUM ER NICHTS VERÄNDERT
+# Der grosse Rauchtest legt Testdaten an und stellt sie zurück. Läuft er
+# täglich gegen Produktion, kann er ein echtes Briefing überschreiben, das
+# im selben Moment ankommt — und meldet dabei "grün". Der Wächter benutzt
+# deshalb smoke-readonly.mjs: ausschliesslich GET, keine Modellaufrufe
+# (die kosten Geld), keine Testeinträge.
+#
+# Installieren:
+#   sudo cp /opt/daily/app/deploy/daily-monitor.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now daily-monitor.timer
+
+[Unit]
+Description=Daily — read-only Gesundheitsprüfung
+After=network-online.target daily.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=daily
+Group=daily
+WorkingDirectory=/opt/daily/app
+EnvironmentFile=/etc/daily/env
+# Fester Pfad wie beim Dienst: /usr/local/bin/node zeigt auf dieser Maschine
+# in Hermes' Installation. Siehe daily.service.
+ExecStart=/usr/bin/node /opt/daily/app/scripts/smoke-readonly.mjs
+
+# Härtung — der Wächter braucht noch weniger als der Dienst: er schreibt nichts.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+# Bewusst KEIN ReadWritePaths: dieser Dienst hat auf der ganzen Platte nichts
+# zu schreiben. Fällt das je auf, ist etwas grundsätzlich falsch.

@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-01-05T07:00:00.000Z",
+  "source": "sample",
+  "count": 4,
+  "events": [
+    {
+      "id": "sample-1|2026-01-05T08:00:00.000Z",
+      "title": "Lecture: Databases",
+      "start": "2026-01-05T08:00:00.000Z",
+      "end": "2026-01-05T09:30:00.000Z",
+      "allDay": false,
+      "calendar": "Uni"
+    },
+    {
+      "id": "sample-2|2026-01-05T12:00:00.000Z",
+      "title": "Lunch with the study group",
+      "start": "2026-01-05T12:00:00.000Z",
+      "end": "2026-01-05T13:00:00.000Z",
+      "allDay": false,
+      "calendar": "Privat"
+    },
+    {
+      "id": "sample-3|2026-01-06",
+      "title": "Project deadline",
+      "start": "2026-01-06",
+      "end": "2026-01-07",
+      "allDay": true,
+      "calendar": "Uni"
+    },
+    {
+      "id": "sample-4|2026-01-07T17:00:00.000Z",
+      "title": "Gym",
+      "start": "2026-01-07T17:00:00.000Z",
+      "end": "2026-01-07T18:00:00.000Z",
+      "allDay": false,
+      "calendar": "Privat"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "name": "morning-dashboard",
+  "productName": "Daily",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && node scripts/check-bundle-secrets.mjs && node scripts/check-orphans.mjs && node scripts/check-storage-keys.mjs",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "dist": "electron-builder --mac --dir",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "smoke:readonly": "node scripts/smoke-readonly.mjs",
+    "smoke:full": "node scripts/smoke-api.mjs",
+    "test:e2e": "playwright test",
+    "check:orphans": "node scripts/check-orphans.mjs",
+    "check:keys": "node scripts/check-storage-keys.mjs",
+    "check:shapes": "node scripts/check-storage-shapes.mjs"
+  },
+  "build": {
+    "appId": "com.example.daily",
+    "productName": "Daily",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "dist/**/*",
+      ".env",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "darkModeSupport": true,
+      "icon": "build/icon.png",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "extendInfo": {
+        "NSLocationWhenInUseUsageDescription": "Daily nutzt deinen Standort, um Wetter und Karte für deinen Ort zu zeigen.",
+        "NSLocationUsageDescription": "Daily nutzt deinen Standort, um Wetter und Karte für deinen Ort zu zeigen.",
+        "NSMicrophoneUsageDescription": "Daily hört zu, wenn du mit Hermes sprichst — und während das Hörbriefing läuft, damit du einfach dazwischenreden kannst."
+      }
+    }
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.93.0",
+    "@tailwindcss/vite": "^4.2.4",
+    "@types/leaflet": "^1.9.21",
+    "leaflet": "^1.9.4",
+    "node-edge-tts": "1.2.11",
+    "node-ical": "^0.26.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^24.12.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "electron": "^42.0.0",
+    "electron-builder": "^26.8.1",
+    "eslint": "^10.2.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.2",
+    "vite": "^8.0.10"
+  },
+  "browserslist": [
+    "chrome >= 111",
+    "safari >= 16",
+    "firefox >= 121",
+    "edge >= 111"
+  ]
+}
